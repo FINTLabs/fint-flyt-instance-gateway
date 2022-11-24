@@ -1,6 +1,6 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
-import no.fintlabs.model.instance.Instance;
+import no.fintlabs.gateway.instance.model.instance.Instance;
 import reactor.core.publisher.Mono;
 
 public interface InstanceMapper<T> {

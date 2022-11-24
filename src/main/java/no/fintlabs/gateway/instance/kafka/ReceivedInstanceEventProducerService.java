@@ -1,4 +1,4 @@
-package no.fintlabs.kafka;
+package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducer;
@@ -7,7 +7,7 @@ import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerRecord;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters;
 import no.fintlabs.kafka.event.topic.EventTopicService;
-import no.fintlabs.model.instance.Instance;
+import no.fintlabs.gateway.instance.model.instance.Instance;
 import org.springframework.stereotype.Service;
 
 @Slf4j

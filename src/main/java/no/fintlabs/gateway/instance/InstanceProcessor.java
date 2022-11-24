@@ -1,14 +1,14 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
-import no.fintlabs.kafka.InstanceReceivalErrorEventProducerService;
-import no.fintlabs.kafka.IntegrationRequestProducerService;
-import no.fintlabs.kafka.ReceivedInstanceEventProducerService;
-import no.fintlabs.model.Integration;
-import no.fintlabs.model.SourceApplicationIdAndSourceApplicationIntegrationId;
+import no.fintlabs.gateway.instance.kafka.InstanceReceivalErrorEventProducerService;
+import no.fintlabs.gateway.instance.kafka.IntegrationRequestProducerService;
+import no.fintlabs.gateway.instance.kafka.ReceivedInstanceEventProducerService;
+import no.fintlabs.gateway.instance.model.Integration;
+import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicationIntegrationId;
 import no.fintlabs.resourceserver.security.client.ClientAuthorizationUtil;
-import no.fintlabs.validation.InstanceValidationException;
-import no.fintlabs.validation.InstanceValidationService;
+import no.fintlabs.gateway.instance.validation.InstanceValidationException;
+import no.fintlabs.gateway.instance.validation.InstanceValidationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

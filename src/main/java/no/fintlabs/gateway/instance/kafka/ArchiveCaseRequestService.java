@@ -1,4 +1,4 @@
-package no.fintlabs.kafka;
+package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.arkiv.noark.SakResource;

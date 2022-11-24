@@ -1,4 +1,4 @@
-package no.fintlabs.validation;
+package no.fintlabs.gateway.instance.validation;
 
 import lombok.Builder;
 import lombok.Data;

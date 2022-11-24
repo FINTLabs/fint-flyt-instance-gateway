@@ -1,7 +1,7 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
 import lombok.Getter;
-import no.fintlabs.model.SourceApplicationIdAndSourceApplicationIntegrationId;
+import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicationIntegrationId;
 
 public class NoIntegrationException extends RuntimeException {
 

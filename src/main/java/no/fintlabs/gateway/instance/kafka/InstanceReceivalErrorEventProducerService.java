@@ -1,9 +1,9 @@
-package no.fintlabs.kafka;
+package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.ErrorCode;
-import no.fintlabs.IntegrationDeactivatedException;
-import no.fintlabs.NoIntegrationException;
+import no.fintlabs.gateway.instance.ErrorCode;
+import no.fintlabs.gateway.instance.IntegrationDeactivatedException;
+import no.fintlabs.gateway.instance.NoIntegrationException;
 import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducer;
 import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducerRecord;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
@@ -11,8 +11,8 @@ import no.fintlabs.kafka.event.error.Error;
 import no.fintlabs.kafka.event.error.ErrorCollection;
 import no.fintlabs.kafka.event.error.topic.ErrorEventTopicNameParameters;
 import no.fintlabs.kafka.event.error.topic.ErrorEventTopicService;
-import no.fintlabs.validation.InstanceValidationErrorMappingService;
-import no.fintlabs.validation.InstanceValidationException;
+import no.fintlabs.gateway.instance.validation.InstanceValidationErrorMappingService;
+import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

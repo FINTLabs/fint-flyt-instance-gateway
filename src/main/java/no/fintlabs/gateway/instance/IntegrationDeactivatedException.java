@@ -1,7 +1,7 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
 import lombok.Getter;
-import no.fintlabs.model.Integration;
+import no.fintlabs.gateway.instance.model.Integration;
 
 public class IntegrationDeactivatedException extends RuntimeException {
 

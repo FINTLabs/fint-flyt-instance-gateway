@@ -1,4 +1,4 @@
-package no.fintlabs.model;
+package no.fintlabs.gateway.instance.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

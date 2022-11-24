@@ -1,4 +1,4 @@
-package no.fintlabs.web;
+package no.fintlabs.gateway.instance.web;
 
 import io.netty.channel.ChannelOption;
 import lombok.Getter;

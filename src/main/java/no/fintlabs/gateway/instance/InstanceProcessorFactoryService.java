@@ -1,9 +1,9 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
-import no.fintlabs.kafka.InstanceReceivalErrorEventProducerService;
-import no.fintlabs.kafka.IntegrationRequestProducerService;
-import no.fintlabs.kafka.ReceivedInstanceEventProducerService;
-import no.fintlabs.validation.InstanceValidationService;
+import no.fintlabs.gateway.instance.kafka.InstanceReceivalErrorEventProducerService;
+import no.fintlabs.gateway.instance.kafka.IntegrationRequestProducerService;
+import no.fintlabs.gateway.instance.kafka.ReceivedInstanceEventProducerService;
+import no.fintlabs.gateway.instance.validation.InstanceValidationService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

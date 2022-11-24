@@ -1,8 +1,8 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
 import no.fint.model.resource.arkiv.noark.SakResource;
-import no.fintlabs.kafka.ArchiveCaseIdRequestService;
-import no.fintlabs.kafka.ArchiveCaseRequestService;
+import no.fintlabs.gateway.instance.kafka.ArchiveCaseIdRequestService;
+import no.fintlabs.gateway.instance.kafka.ArchiveCaseRequestService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

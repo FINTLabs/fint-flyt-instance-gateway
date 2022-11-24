@@ -1,7 +1,7 @@
-package no.fintlabs.web;
+package no.fintlabs.gateway.instance.web;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.model.File;
+import no.fintlabs.gateway.instance.model.File;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

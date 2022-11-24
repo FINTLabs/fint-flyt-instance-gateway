@@ -1,4 +1,4 @@
-package no.fintlabs;
+package no.fintlabs.gateway.instance;
 
 public enum ErrorCode {
     GENERAL_SYSTEM_ERROR,

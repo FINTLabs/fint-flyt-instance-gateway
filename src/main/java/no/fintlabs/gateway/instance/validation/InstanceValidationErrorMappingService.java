@@ -1,6 +1,6 @@
-package no.fintlabs.validation;
+package no.fintlabs.gateway.instance.validation;
 
-import no.fintlabs.ErrorCode;
+import no.fintlabs.gateway.instance.ErrorCode;
 import no.fintlabs.kafka.event.error.Error;
 import no.fintlabs.kafka.event.error.ErrorCollection;
 import org.springframework.stereotype.Service;
