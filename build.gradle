@@ -9,8 +9,6 @@ plugins {
     id 'java-library'
 }
 
-version = '0.0.1-SNAPSHOT'
-
 group = 'no.fintlabs'
 sourceCompatibility = '17'
 targetCompatibility = '17'
