@@ -9,7 +9,7 @@ public class IntegrationDeactivatedException extends RuntimeException {
     private final Integration integration;
 
     public IntegrationDeactivatedException(Integration integration) {
-        super("Integration is disabled: " + integration);
+        super("Integration is deactivated: " + integration);
         this.integration = integration;
     }
 
