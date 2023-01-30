@@ -14,7 +14,10 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InstanceElement {
+
+    @Builder.Default
     private Map<String, String> valuePerKey = new HashMap<>();
 
+    @Builder.Default
     private Map<String, Collection<InstanceElement>> elementCollectionPerKey = new HashMap<>();
 }
