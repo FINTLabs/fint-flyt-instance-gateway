@@ -5,23 +5,23 @@ import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducer;
 import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerFactory;
 import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerRecord;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
+import no.fintlabs.gateway.instance.model.instance.InstanceElement;
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters;
 import no.fintlabs.kafka.event.topic.EventTopicService;
-import no.fintlabs.gateway.instance.model.instance.Instance;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class ReceivedInstanceEventProducerService {
 
-    private final InstanceFlowEventProducer<Instance> instanceProducer;
+    private final InstanceFlowEventProducer<InstanceElement> instanceProducer;
     private final EventTopicNameParameters formDefinitionEventTopicNameParameters;
 
     public ReceivedInstanceEventProducerService(
             InstanceFlowEventProducerFactory instanceFlowEventProducerFactory,
             EventTopicService eventTopicService
     ) {
-        this.instanceProducer = instanceFlowEventProducerFactory.createProducer(Instance.class);
+        this.instanceProducer = instanceFlowEventProducerFactory.createProducer(InstanceElement.class);
         this.formDefinitionEventTopicNameParameters = EventTopicNameParameters.builder()
                 .eventName("instance-received")
                 .build();
@@ -30,10 +30,10 @@ public class ReceivedInstanceEventProducerService {
 
     public void publish(
             InstanceFlowHeaders instanceFlowHeaders,
-            Instance instance
+            InstanceElement instance
     ) {
         instanceProducer.send(
-                InstanceFlowEventProducerRecord.<Instance>builder()
+                InstanceFlowEventProducerRecord.<InstanceElement>builder()
                         .topicNameParameters(formDefinitionEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(instance)
