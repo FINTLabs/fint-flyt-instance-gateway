@@ -11,8 +11,6 @@ import org.springframework.http.MediaType;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class File {
     private String name;
     private Long sourceApplicationId;
