@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = Base64Validator.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidBase64 {
-    String message() default "Invalid base64 string";
+    String message() default "Invalid base64-encoded string";
 
     Class<?>[] groups() default {};
 

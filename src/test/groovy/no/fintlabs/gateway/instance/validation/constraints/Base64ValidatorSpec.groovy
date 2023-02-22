@@ -1,33 +1,73 @@
 package no.fintlabs.gateway.instance.validation.constraints
 
-
 import spock.lang.Specification
 
 class Base64ValidatorSpec extends Specification {
 
-    private final Base64Validator validator = new Base64Validator()
+    Base64Validator validator = new Base64Validator()
 
-    def "valid Base64 string should pass validation"() {
+    def "empty value should be invalid"() {
         when:
-        def result = validator.isValid("YW55IGNhcm5hbCBwbGVhc3Vy", null)
+        boolean isValid = validator.isValid("", null)
 
         then:
-        result
+        !isValid
     }
 
-    def "invalid Base64 string should fail validation"() {
+    def "null value should be invalid"() {
         when:
-        def result = validator.isValid("not a valid base64 string", null)
+        boolean isValid = validator.isValid(null, null)
 
         then:
-        !result
+        !isValid
     }
 
-    def "null value should fail validation"() {
+    def "blank value should be invalid"() {
         when:
-        def result = validator.isValid(null, null)
+        boolean isValid = validator.isValid("   ", null)
 
         then:
-        !result
+        !isValid
     }
+
+    def "invalid base64 value should be invalid"() {
+        when:
+        boolean isValid = validator.isValid("invalid-base64", null)
+
+        then:
+        !isValid
+    }
+
+    def "valid base64 value with one padding char should be valid"() {
+        when:
+        boolean isValid = validator.isValid("Zm9vYg==", null)
+
+        then:
+        isValid
+    }
+
+    def "valid base64 value with two padding chars should be valid"() {
+        when:
+        boolean isValid = validator.isValid("Zm9vYg===", null)
+
+        then:
+        !isValid
+    }
+
+    def "valid base64 value without padding should be invalid"() {
+        when:
+        boolean isValid = validator.isValid("Zm9vYg", null)
+
+        then:
+        !isValid
+    }
+
+    def "valid base64 value with more than two padding chars should be invalid"() {
+        when:
+        boolean isValid = validator.isValid("Zm9vYg====", null)
+
+        then:
+        !isValid
+    }
+
 }
