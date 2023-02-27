@@ -1,73 +1,90 @@
 package no.fintlabs.gateway.instance.validation.constraints
 
+
 import spock.lang.Specification
 
 class Base64ValidatorSpec extends Specification {
 
     Base64Validator validator = new Base64Validator()
 
-    def "empty value should be invalid"() {
+    def "null value should be valid"() {
         when:
-        boolean isValid = validator.isValid("", null)
+        boolean valid = validator.isValid(null, null)
 
         then:
-        !isValid
+        valid
     }
 
-    def "null value should be invalid"() {
+    def "empty value should be valid"() {
         when:
-        boolean isValid = validator.isValid(null, null)
+        boolean valid = validator.isValid("", null)
 
         then:
-        !isValid
+        valid
+    }
+
+    def "value with no padding characters should be valid"() {
+        when:
+        boolean valid = validator.isValid("AAAA", null)
+
+        then:
+        valid
+    }
+
+    def "value with one padding character should be valid"() {
+        when:
+        boolean valid = validator.isValid("AAA=", null)
+
+        then:
+        valid
+    }
+
+    def "value with two padding characters should be valid"() {
+        when:
+        boolean valid = validator.isValid("AA==", null)
+
+        then:
+        valid
+    }
+
+    def "value not divisible by 4 should be valid"() {
+        when:
+        boolean valid = validator.isValid("AAA", null)
+
+        then:
+        valid
     }
 
     def "blank value should be invalid"() {
         when:
-        boolean isValid = validator.isValid("   ", null)
+        boolean valid = validator.isValid("    ", null)
 
         then:
-        !isValid
+        !valid
     }
 
-    def "invalid base64 value should be invalid"() {
+    def "value with whitespace should be invalid"() {
         when:
-        boolean isValid = validator.isValid("invalid-base64", null)
+        boolean valid = validator.isValid("AA A", null)
 
         then:
-        !isValid
+        !valid
     }
 
-    def "valid base64 value with one padding char should be valid"() {
+    def "value with non-base64 character should be invalid"() {
         when:
-        boolean isValid = validator.isValid("Zm9vYg==", null)
+        boolean valid = validator.isValid("AA-A", null)
 
         then:
-        isValid
+        !valid
     }
 
-    def "valid base64 value with two padding chars should be valid"() {
+    def "value with three padding characters should be invalid"() {
         when:
-        boolean isValid = validator.isValid("Zm9vYg===", null)
+        boolean valid = validator.isValid("A===", null)
 
         then:
-        !isValid
-    }
-
-    def "valid base64 value without padding should be invalid"() {
-        when:
-        boolean isValid = validator.isValid("Zm9vYg", null)
-
-        then:
-        !isValid
-    }
-
-    def "valid base64 value with more than two padding chars should be invalid"() {
-        when:
-        boolean isValid = validator.isValid("Zm9vYg====", null)
-
-        then:
-        !isValid
+        !valid
     }
 
 }
