@@ -13,11 +13,11 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InstanceElement {
+public class InstanceObject {
 
     @Builder.Default
     private Map<String, String> valuePerKey = new HashMap<>();
 
     @Builder.Default
-    private Map<String, Collection<InstanceElement>> elementCollectionPerKey = new HashMap<>();
+    private Map<String, Collection<InstanceObject>> objectCollectionPerKey = new HashMap<>();
 }
