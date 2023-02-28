@@ -5,7 +5,7 @@ import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducer;
 import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerFactory;
 import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerRecord;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
-import no.fintlabs.gateway.instance.model.instance.InstanceElement;
+import no.fintlabs.gateway.instance.model.instance.InstanceObject;
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters;
 import no.fintlabs.kafka.event.topic.EventTopicService;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReceivedInstanceEventProducerService {
 
-    private final InstanceFlowEventProducer<InstanceElement> instanceProducer;
+    private final InstanceFlowEventProducer<InstanceObject> instanceProducer;
     private final EventTopicNameParameters formDefinitionEventTopicNameParameters;
 
     public ReceivedInstanceEventProducerService(
             InstanceFlowEventProducerFactory instanceFlowEventProducerFactory,
             EventTopicService eventTopicService
     ) {
-        this.instanceProducer = instanceFlowEventProducerFactory.createProducer(InstanceElement.class);
+        this.instanceProducer = instanceFlowEventProducerFactory.createProducer(InstanceObject.class);
         this.formDefinitionEventTopicNameParameters = EventTopicNameParameters.builder()
                 .eventName("instance-received")
                 .build();
@@ -30,10 +30,10 @@ public class ReceivedInstanceEventProducerService {
 
     public void publish(
             InstanceFlowHeaders instanceFlowHeaders,
-            InstanceElement instance
+            InstanceObject instance
     ) {
         instanceProducer.send(
-                InstanceFlowEventProducerRecord.<InstanceElement>builder()
+                InstanceFlowEventProducerRecord.<InstanceObject>builder()
                         .topicNameParameters(formDefinitionEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(instance)
