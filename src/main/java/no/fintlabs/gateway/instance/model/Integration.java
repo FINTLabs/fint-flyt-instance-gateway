@@ -1,14 +1,13 @@
 package no.fintlabs.gateway.instance.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
+@Getter
+@EqualsAndHashCode
+@Jacksonized
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class Integration {
 
     public enum State {

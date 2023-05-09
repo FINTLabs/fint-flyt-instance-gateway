@@ -2,6 +2,9 @@ package no.fintlabs.gateway.instance.validation;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -14,7 +17,9 @@ import java.util.stream.Collectors;
 @Service
 public class InstanceValidationService {
 
-    @Data
+    @Getter
+    @EqualsAndHashCode
+    @Jacksonized
     @Builder
     public static class Error {
         private final String fieldPath;

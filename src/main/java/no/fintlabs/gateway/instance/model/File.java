@@ -5,9 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import org.springframework.http.MediaType;
 
-@Data
+@Getter
+@EqualsAndHashCode
+@Jacksonized
 @Builder
 public class File {
     private String name;

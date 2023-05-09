@@ -9,7 +9,7 @@ public class NoIntegrationException extends RuntimeException {
     private final SourceApplicationIdAndSourceApplicationIntegrationId sourceApplicationIdAndSourceApplicationIntegrationId;
 
     public NoIntegrationException(SourceApplicationIdAndSourceApplicationIntegrationId sourceApplicationIdAndSourceApplicationIntegrationId) {
-        super("Could not find integration for " + sourceApplicationIdAndSourceApplicationIntegrationId.toString());
+        super("Could not find integration for " + sourceApplicationIdAndSourceApplicationIntegrationId.getSourceApplicationId());
         this.sourceApplicationIdAndSourceApplicationIntegrationId = sourceApplicationIdAndSourceApplicationIntegrationId;
     }
 }
