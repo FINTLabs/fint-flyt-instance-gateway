@@ -1,18 +1,17 @@
 package no.fintlabs.gateway.instance.model.instance;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
+@Getter
+@EqualsAndHashCode
+@Jacksonized
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class InstanceObject {
 
     @Builder.Default

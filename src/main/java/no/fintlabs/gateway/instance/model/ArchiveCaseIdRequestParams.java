@@ -2,8 +2,13 @@ package no.fintlabs.gateway.instance.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
+@Getter
+@EqualsAndHashCode
+@Jacksonized
 @Builder
 public class ArchiveCaseIdRequestParams {
     private final Long sourceApplicationId;
