@@ -9,6 +9,7 @@ import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicatio
 import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import no.fintlabs.gateway.instance.validation.InstanceValidationService;
 import no.fintlabs.resourceserver.security.client.ClientAuthorizationUtil;
+import no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -55,7 +56,7 @@ public class InstanceProcessor<T> {
         InstanceFlowHeaders.InstanceFlowHeadersBuilder instanceFlowHeadersBuilder = InstanceFlowHeaders.builder();
 
         try {
-            Long sourceApplicationId = ClientAuthorizationUtil.getSourceApplicationId(authentication);
+            Long sourceApplicationId = SourceApplicationAuthorizationUtil.getSourceApplicationId(authentication);
 
             instanceFlowHeadersBuilder.correlationId(UUID.randomUUID());
             instanceFlowHeadersBuilder.sourceApplicationId(sourceApplicationId);
