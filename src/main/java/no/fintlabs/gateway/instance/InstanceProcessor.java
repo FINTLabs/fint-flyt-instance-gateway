@@ -8,7 +8,6 @@ import no.fintlabs.gateway.instance.model.Integration;
 import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicationIntegrationId;
 import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import no.fintlabs.gateway.instance.validation.InstanceValidationService;
-import no.fintlabs.resourceserver.security.client.ClientAuthorizationUtil;
 import no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

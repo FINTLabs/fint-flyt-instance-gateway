@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static no.fintlabs.resourceserver.security.client.ClientAuthorizationUtil.getSourceApplicationId;
+import static no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationUtil.getSourceApplicationId;
 
 @Service
 public class ArchiveCaseService {
