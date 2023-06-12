@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id 'org.springframework.boot' version '2.7.10' apply false
+    id 'org.springframework.boot' version '2.7.12' apply false
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'groovy'
@@ -44,7 +44,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'no.fintlabs:fint-flyt-resource-server:1.2.0'
+    implementation 'no.fintlabs:fint-flyt-resource-server:1.2.1'
 
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.85.Final:osx-aarch_64'
 
@@ -60,7 +60,7 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka:2.9.0'
     implementation 'no.fintlabs:fint-kafka:2.3.0'
-    implementation 'no.fintlabs:fint-flyt-kafka:2.3.0'
+    implementation 'no.fintlabs:fint-flyt-kafka:2.3.2'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
