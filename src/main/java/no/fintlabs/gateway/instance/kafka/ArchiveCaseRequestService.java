@@ -29,14 +29,15 @@ public class ArchiveCaseRequestService {
             ReplyTopicService replyTopicService,
             RequestProducerFactory requestProducerFactory
     ) {
+        String topicName = "arkiv.noark.sak-with-filtered-journalposts";
         requestTopicNameParameters = RequestTopicNameParameters.builder()
-                .resource("arkiv.noark.sak")
+                .resource(topicName)
                 .parameterName("mappeid")
                 .build();
 
         ReplyTopicNameParameters replyTopicNameParameters = ReplyTopicNameParameters.builder()
                 .applicationId(applicationId)
-                .resource("arkiv.noark.sak")
+                .resource(topicName)
                 .build();
 
         replyTopicService.ensureTopic(replyTopicNameParameters, 0, TopicCleanupPolicyParameters.builder().build());
