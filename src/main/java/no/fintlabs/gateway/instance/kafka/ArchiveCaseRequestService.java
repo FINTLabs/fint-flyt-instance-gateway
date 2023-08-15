@@ -32,7 +32,7 @@ public class ArchiveCaseRequestService {
         String topicName = "arkiv.noark.sak-with-filtered-journalposts";
         requestTopicNameParameters = RequestTopicNameParameters.builder()
                 .resource(topicName)
-                .parameterName("mappeid")
+                .parameterName("archive-instance-id")
                 .build();
 
         ReplyTopicNameParameters replyTopicNameParameters = ReplyTopicNameParameters.builder()
