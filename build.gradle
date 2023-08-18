@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id 'org.springframework.boot' version '2.7.12' apply false
+    id 'org.springframework.boot' version '2.7.14' apply false
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'groovy'
@@ -58,9 +58,9 @@ dependencies {
     implementation 'javax.validation:validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.springframework.kafka:spring-kafka:2.9.0'
-    implementation 'no.fintlabs:fint-kafka:2.3.0'
-    implementation 'no.fintlabs:fint-flyt-kafka:2.3.2'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'no.fintlabs:fint-kafka:2.4.1'
+    implementation 'no.fintlabs:fint-flyt-kafka:2.4.2'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
