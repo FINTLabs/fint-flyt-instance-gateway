@@ -4,9 +4,9 @@ import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class InstanceValidationException extends RuntimeException {
 
-    @Getter
     private final List<InstanceValidationService.Error> validationErrors;
 
     public InstanceValidationException(List<InstanceValidationService.Error> validationErrors) {

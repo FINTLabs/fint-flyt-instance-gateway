@@ -1,6 +1,7 @@
 package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.gateway.instance.AbstractInstanceRejectedException;
 import no.fintlabs.gateway.instance.ErrorCode;
 import no.fintlabs.gateway.instance.IntegrationDeactivatedException;
 import no.fintlabs.gateway.instance.NoIntegrationException;
@@ -47,6 +48,22 @@ public class InstanceReceivalErrorEventProducerService {
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .errorCollection(instanceValidationErrorMappingService.map(e))
+                        .build()
+        );
+    }
+
+    public void publishInstanceRejectedErrorEvent(InstanceFlowHeaders instanceFlowHeaders, AbstractInstanceRejectedException e) {
+        instanceFlowErrorEventProducer.send(
+                InstanceFlowErrorEventProducerRecord
+                        .builder()
+                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .instanceFlowHeaders(instanceFlowHeaders)
+                        .errorCollection(new ErrorCollection(Error
+                                .builder()
+                                .errorCode(ErrorCode.INSTANCE_REJECTED_ERROR.getCode())
+                                .args(Map.of("message", e.getMessage()))
+                                .build()
+                        ))
                         .build()
         );
     }
