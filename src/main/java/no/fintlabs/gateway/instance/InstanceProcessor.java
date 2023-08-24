@@ -116,6 +116,13 @@ public class InstanceProcessor<T> {
                                     .map(error -> "'" + error.getFieldPath() + " " + error.getErrorMessage() + "'")
                                     .toList()
             );
+        } catch (AbstractInstanceRejectedException e) {
+            instanceReceivalErrorEventProducerService.publishInstanceRejectedErrorEvent(instanceFlowHeadersBuilder.build(), e);
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNPROCESSABLE_ENTITY,
+                    e.getMessage()
+            );
         } catch (NoIntegrationException e) {
             instanceReceivalErrorEventProducerService.publishNoIntegrationFoundErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
@@ -123,7 +130,7 @@ public class InstanceProcessor<T> {
                     HttpStatus.UNPROCESSABLE_ENTITY,
                     e.getMessage()
             );
-        } catch (IntegrationDeactivatedException e) {
+        }  catch (IntegrationDeactivatedException e) {
             instanceReceivalErrorEventProducerService.publishIntegrationDeactivatedErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
             throw new ResponseStatusException(

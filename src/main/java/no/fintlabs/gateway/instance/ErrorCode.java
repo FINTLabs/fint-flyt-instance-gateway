@@ -3,6 +3,7 @@ package no.fintlabs.gateway.instance;
 public enum ErrorCode {
     GENERAL_SYSTEM_ERROR,
     INSTANCE_VALIDATION_ERROR,
+    INSTANCE_REJECTED_ERROR,
     NO_INTEGRATION_FOUND_ERROR,
     INTEGRATION_DEACTIVATED_ERROR;
 
