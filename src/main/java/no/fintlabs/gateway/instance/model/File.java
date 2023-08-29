@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
@@ -24,4 +23,9 @@ public class File {
 
     @JsonProperty(value = "contents")
     private String base64Contents;
+
+    @Override
+    public String toString() {
+        return "Sensitive data omitted";
+    }
 }
