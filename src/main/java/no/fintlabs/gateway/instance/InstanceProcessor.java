@@ -1,6 +1,9 @@
 package no.fintlabs.gateway.instance;
 
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
+import no.fintlabs.gateway.instance.exception.AbstractInstanceRejectedException;
+import no.fintlabs.gateway.instance.exception.IntegrationDeactivatedException;
+import no.fintlabs.gateway.instance.exception.NoIntegrationException;
 import no.fintlabs.gateway.instance.kafka.InstanceReceivalErrorEventProducerService;
 import no.fintlabs.gateway.instance.kafka.IntegrationRequestProducerService;
 import no.fintlabs.gateway.instance.kafka.ReceivedInstanceEventProducerService;

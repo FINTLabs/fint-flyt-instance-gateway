@@ -1,10 +1,10 @@
 package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.gateway.instance.AbstractInstanceRejectedException;
+import no.fintlabs.gateway.instance.exception.AbstractInstanceRejectedException;
 import no.fintlabs.gateway.instance.ErrorCode;
-import no.fintlabs.gateway.instance.IntegrationDeactivatedException;
-import no.fintlabs.gateway.instance.NoIntegrationException;
+import no.fintlabs.gateway.instance.exception.IntegrationDeactivatedException;
+import no.fintlabs.gateway.instance.exception.NoIntegrationException;
 import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducer;
 import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducerRecord;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
