@@ -23,9 +23,4 @@ public class File {
 
     @JsonProperty(value = "contents")
     private String base64Contents;
-
-    @Override
-    public String toString() {
-        return "Sensitive data omitted";
-    }
 }
