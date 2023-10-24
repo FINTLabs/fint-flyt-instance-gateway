@@ -1,7 +1,7 @@
 package no.fintlabs.gateway.instance.web;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.gateway.instance.exception.FileUploadErrorException;
+import no.fintlabs.gateway.instance.exception.FileUploadException;
 import no.fintlabs.gateway.instance.model.File;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Service
@@ -25,7 +25,7 @@ public class FileClient {
 
     public Mono<UUID> postFile(File file) {
 
-        AtomicBoolean hasThrownFileUploadException = new AtomicBoolean(false);
+        AtomicReference<String> lastErrorBody = new AtomicReference<>();
 
         return fileWebClient
                 .post()
@@ -35,17 +35,16 @@ public class FileClient {
                         return clientResponse.bodyToMono(String.class)
                                 .flatMap(errorBody -> {
                                     log.error("Could not post file=" + file + " Error: " + errorBody);
-                                    if (!hasThrownFileUploadException.getAndSet(true)) {
-                                        return Mono.error(new FileUploadErrorException(file, errorBody));
-                                    }
-                                    return Mono.error(new RuntimeException("File upload failed"));
+                                    return Mono.error(new FileUploadException(file, errorBody));
                                 });
                     } else {
                         return clientResponse.bodyToMono(UUID.class);
                     }
                 })
-                .retryWhen(Retry.backoff(5, Duration.ofSeconds(1)))
-                .doFinally(signalType -> hasThrownFileUploadException.set(false));
+                .retryWhen(Retry.backoff(5, Duration.ofSeconds(1))
+                        .onRetryExhaustedThrow((spec, signal) -> new FileUploadException(file, lastErrorBody.get()))
+                )
+                .doFinally(signalType -> lastErrorBody.set(null));
     }
 
 }
