@@ -1,19 +1,20 @@
 package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.gateway.instance.exception.AbstractInstanceRejectedException;
-import no.fintlabs.gateway.instance.ErrorCode;
-import no.fintlabs.gateway.instance.exception.IntegrationDeactivatedException;
-import no.fintlabs.gateway.instance.exception.NoIntegrationException;
 import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducer;
 import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducerRecord;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
+import no.fintlabs.gateway.instance.ErrorCode;
+import no.fintlabs.gateway.instance.exception.AbstractInstanceRejectedException;
+import no.fintlabs.gateway.instance.exception.FileUploadException;
+import no.fintlabs.gateway.instance.exception.IntegrationDeactivatedException;
+import no.fintlabs.gateway.instance.exception.NoIntegrationException;
+import no.fintlabs.gateway.instance.validation.InstanceValidationErrorMappingService;
+import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import no.fintlabs.kafka.event.error.Error;
 import no.fintlabs.kafka.event.error.ErrorCollection;
 import no.fintlabs.kafka.event.error.topic.ErrorEventTopicNameParameters;
 import no.fintlabs.kafka.event.error.topic.ErrorEventTopicService;
-import no.fintlabs.gateway.instance.validation.InstanceValidationErrorMappingService;
-import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -62,6 +63,26 @@ public class InstanceReceivalErrorEventProducerService {
                                 .builder()
                                 .errorCode(ErrorCode.INSTANCE_REJECTED_ERROR.getCode())
                                 .args(Map.of("message", e.getMessage()))
+                                .build()
+                        ))
+                        .build()
+        );
+    }
+
+    public void publishInstanceFileUploadErrorEvent(InstanceFlowHeaders instanceFlowHeaders, FileUploadException e) {
+        instanceFlowErrorEventProducer.send(
+                InstanceFlowErrorEventProducerRecord
+                        .builder()
+                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .instanceFlowHeaders(instanceFlowHeaders)
+                        .errorCollection(new ErrorCollection(Error
+                                .builder()
+                                .errorCode(ErrorCode.FILE_UPLOAD_ERROR.getCode())
+                                .args(Map.of(
+                                                "name", e.getFile().getName(),
+                                                "mediatype", e.getFile().getType().toString()
+                                        )
+                                )
                                 .build()
                         ))
                         .build()

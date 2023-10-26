@@ -1,7 +1,9 @@
 package no.fintlabs.gateway.instance;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
 import no.fintlabs.gateway.instance.exception.AbstractInstanceRejectedException;
+import no.fintlabs.gateway.instance.exception.FileUploadException;
 import no.fintlabs.gateway.instance.exception.IntegrationDeactivatedException;
 import no.fintlabs.gateway.instance.exception.NoIntegrationException;
 import no.fintlabs.gateway.instance.kafka.InstanceReceivalErrorEventProducerService;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
+@Slf4j
 public class InstanceProcessor<T> {
 
     private final IntegrationRequestProducerService integrationRequestProducerService;
@@ -50,15 +53,17 @@ public class InstanceProcessor<T> {
         this.instanceMapper = instanceMapper;
     }
 
-    public Mono<ResponseEntity<?>> processInstance(
+    public Mono<ResponseEntity<Object>> processInstance(
             Authentication authentication,
             T incomingInstance
     ) {
 
         InstanceFlowHeaders.InstanceFlowHeadersBuilder instanceFlowHeadersBuilder = InstanceFlowHeaders.builder();
 
+        Long sourceApplicationId;
+
         try {
-            Long sourceApplicationId = SourceApplicationAuthorizationUtil.getSourceApplicationId(authentication);
+            sourceApplicationId = SourceApplicationAuthorizationUtil.getSourceApplicationId(authentication);
 
             instanceFlowHeadersBuilder.correlationId(UUID.randomUUID());
             instanceFlowHeadersBuilder.sourceApplicationId(sourceApplicationId);
@@ -102,12 +107,6 @@ public class InstanceProcessor<T> {
                 throw new IllegalStateException("sourceApplicationInstanceIdOptional is empty, and was not caught in validation");
             }
 
-            return instanceMapper.map(sourceApplicationId, incomingInstance)
-                    .doOnNext(instance -> receivedInstanceEventProducerService.publish(
-                            instanceFlowHeadersBuilder.build(),
-                            instance
-                    )).thenReturn(ResponseEntity.accepted().build());
-
         } catch (InstanceValidationException e) {
             instanceReceivalErrorEventProducerService.publishInstanceValidationErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
@@ -133,7 +132,7 @@ public class InstanceProcessor<T> {
                     HttpStatus.UNPROCESSABLE_ENTITY,
                     e.getMessage()
             );
-        }  catch (IntegrationDeactivatedException e) {
+        } catch (IntegrationDeactivatedException e) {
             instanceReceivalErrorEventProducerService.publishIntegrationDeactivatedErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
             throw new ResponseStatusException(
@@ -144,6 +143,27 @@ public class InstanceProcessor<T> {
             instanceReceivalErrorEventProducerService.publishGeneralSystemErrorEvent(instanceFlowHeadersBuilder.build());
             throw e;
         }
+
+        return instanceMapper.map(sourceApplicationId, incomingInstance)
+                .doOnNext(instance -> receivedInstanceEventProducerService.publish(
+                        instanceFlowHeadersBuilder.build(),
+                        instance
+                ))
+                .thenReturn(ResponseEntity.accepted().build())
+                .onErrorResume(e -> e instanceof FileUploadException, e -> {
+                    log.error("File upload error");
+                    instanceReceivalErrorEventProducerService.publishInstanceFileUploadErrorEvent(instanceFlowHeadersBuilder.build(), (FileUploadException) e);
+                    return Mono.just(
+                            ResponseEntity
+                                    .internalServerError()
+                                    .body(e.getMessage())
+                    );
+                })
+                .onErrorResume(e -> {
+                    log.error("General system error ", e);
+                    instanceReceivalErrorEventProducerService.publishGeneralSystemErrorEvent(instanceFlowHeadersBuilder.build());
+                    return Mono.just(ResponseEntity.internalServerError().build());
+                });
 
     }
 
