@@ -1,4 +1,4 @@
-package no.fintlabs.gateway.instance;
+package no.fintlabs.gateway.instance.exception;
 
 import lombok.Getter;
 

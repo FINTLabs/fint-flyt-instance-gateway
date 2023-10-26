@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.http.MediaType;
 
+import java.util.StringJoiner;
+
 @Getter
 @EqualsAndHashCode
 @Jacksonized
@@ -23,4 +25,15 @@ public class File {
 
     @JsonProperty(value = "contents")
     private String base64Contents;
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", File.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .add("sourceApplicationId=" + sourceApplicationId)
+                .add("sourceApplicationInstanceId='" + sourceApplicationInstanceId + "'")
+                .add("type=" + type)
+                .add("encoding='" + encoding + "'")
+                .toString();
+    }
 }
