@@ -53,7 +53,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
 
-    implementation "no.fint:fint-arkiv-resource-model-java:3.11.0"
+    implementation "no.fint:fint-arkiv-resource-model-java:${apiVersion}"
 
     implementation 'javax.validation:validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
