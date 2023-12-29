@@ -118,13 +118,6 @@ public class InstanceProcessor<T> {
                                     .map(error -> "'" + error.getFieldPath() + " " + error.getErrorMessage() + "'")
                                     .toList()
             );
-        } catch (AbstractInstanceRejectedException e) {
-            instanceReceivalErrorEventProducerService.publishInstanceRejectedErrorEvent(instanceFlowHeadersBuilder.build(), e);
-
-            throw new ResponseStatusException(
-                    HttpStatus.UNPROCESSABLE_ENTITY,
-                    e.getMessage()
-            );
         } catch (NoIntegrationException e) {
             instanceReceivalErrorEventProducerService.publishNoIntegrationFoundErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
@@ -150,6 +143,11 @@ public class InstanceProcessor<T> {
                         instance
                 ))
                 .thenReturn(ResponseEntity.accepted().build())
+                .onErrorResume(AbstractInstanceRejectedException.class, e -> {
+                    log.error("Instance receival error");
+                    instanceReceivalErrorEventProducerService.publishInstanceRejectedErrorEvent(instanceFlowHeadersBuilder.build(), e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage()));
+                })
                 .onErrorResume(e -> e instanceof FileUploadException, e -> {
                     log.error("File upload error");
                     instanceReceivalErrorEventProducerService.publishInstanceFileUploadErrorEvent(instanceFlowHeadersBuilder.build(), (FileUploadException) e);
