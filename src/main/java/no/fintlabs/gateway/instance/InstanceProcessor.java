@@ -14,6 +14,7 @@ import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicatio
 import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import no.fintlabs.gateway.instance.validation.InstanceValidationService;
 import no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,9 @@ public class InstanceProcessor<T> {
     private final Function<T, Optional<String>> sourceApplicationIntegrationIdFunction;
     private final Function<T, Optional<String>> sourceApplicationInstanceIdFunction;
     private final InstanceMapper<T> instanceMapper;
+
+    @Value("${fint.flyt.instance-gateway.check-integration-exists:true}")
+    boolean checkIntegrationExists;
 
     public InstanceProcessor(
             IntegrationRequestProducerService integrationRequestProducerService,
@@ -84,14 +88,16 @@ public class InstanceProcessor<T> {
                                     .sourceApplicationIntegrationId(sourceApplicationIntegrationId)
                                     .build();
 
-                    Integration integration = integrationRequestProducerService
-                            .get(sourceApplicationIdAndSourceApplicationIntegrationId)
-                            .orElseThrow(() -> new NoIntegrationException(sourceApplicationIdAndSourceApplicationIntegrationId));
+                    if (checkIntegrationExists) {
+                        Integration integration = integrationRequestProducerService
+                                .get(sourceApplicationIdAndSourceApplicationIntegrationId)
+                                .orElseThrow(() -> new NoIntegrationException(sourceApplicationIdAndSourceApplicationIntegrationId));
 
-                    instanceFlowHeadersBuilder.integrationId(integration.getId());
+                        instanceFlowHeadersBuilder.integrationId(integration.getId());
 
-                    if (integration.getState() == Integration.State.DEACTIVATED) {
-                        throw new IntegrationDeactivatedException(integration);
+                        if (integration.getState() == Integration.State.DEACTIVATED) {
+                            throw new IntegrationDeactivatedException(integration);
+                        }
                     }
                 }
             });
