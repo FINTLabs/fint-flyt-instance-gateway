@@ -21,6 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -32,6 +34,7 @@ public class InstanceProcessor<T> {
     private final InstanceValidationService instanceValidationService;
     private final ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
     private final InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private final FileClient fileClient;
     private final Function<T, Optional<String>> sourceApplicationIntegrationIdFunction;
     private final Function<T, Optional<String>> sourceApplicationInstanceIdFunction;
     private final InstanceMapper<T> instanceMapper;
@@ -39,11 +42,12 @@ public class InstanceProcessor<T> {
     @Value("${fint.flyt.instance-gateway.check-integration-exists:true}")
     boolean checkIntegrationExists;
 
-    public InstanceProcessor(
+    InstanceProcessor(
             IntegrationRequestProducerService integrationRequestProducerService,
             InstanceValidationService instanceValidationService,
             ReceivedInstanceEventProducerService receivedInstanceEventProducerService,
             InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService,
+            FileClient fileClient,
             Function<T, Optional<String>> sourceApplicationIntegrationIdFunction,
             Function<T, Optional<String>> sourceApplicationInstanceIdFunction,
             InstanceMapper<T> instanceMapper
@@ -52,6 +56,7 @@ public class InstanceProcessor<T> {
         this.instanceValidationService = instanceValidationService;
         this.receivedInstanceEventProducerService = receivedInstanceEventProducerService;
         this.instanceReceivalErrorEventProducerService = instanceReceivalErrorEventProducerService;
+        this.fileClient = fileClient;
         this.sourceApplicationIntegrationIdFunction = sourceApplicationIntegrationIdFunction;
         this.sourceApplicationInstanceIdFunction = sourceApplicationInstanceIdFunction;
         this.instanceMapper = instanceMapper;
@@ -66,11 +71,15 @@ public class InstanceProcessor<T> {
 
         Long sourceApplicationId;
 
+        List<UUID> fileIds = new ArrayList<>();
+
         try {
             sourceApplicationId = SourceApplicationAuthorizationUtil.getSourceApplicationId(authentication);
 
             instanceFlowHeadersBuilder.correlationId(UUID.randomUUID());
             instanceFlowHeadersBuilder.sourceApplicationId(sourceApplicationId);
+
+            instanceFlowHeadersBuilder.fileIds(fileIds);
 
             Optional<String> sourceApplicationIntegrationIdOptional = sourceApplicationIntegrationIdFunction.apply(incomingInstance);
             Optional<String> sourceApplicationInstanceIdOptional = sourceApplicationInstanceIdFunction.apply(incomingInstance);
@@ -143,7 +152,13 @@ public class InstanceProcessor<T> {
             throw e;
         }
 
-        return instanceMapper.map(sourceApplicationId, incomingInstance)
+
+        return instanceMapper.map(
+                        sourceApplicationId,
+                        incomingInstance,
+                        file -> fileClient.postFile(file)
+                                .doOnNext(fileIds::add)
+                )
                 .doOnNext(instance -> receivedInstanceEventProducerService.publish(
                         instanceFlowHeadersBuilder.build(),
                         instance

@@ -1,4 +1,4 @@
-package no.fintlabs.gateway.instance.web;
+package no.fintlabs.gateway.instance;
 
 import no.fintlabs.gateway.instance.exception.FileUploadException;
 import no.fintlabs.gateway.instance.model.File;
@@ -12,15 +12,15 @@ import java.time.Duration;
 import java.util.UUID;
 
 @Service
-public class FileClient {
+class FileClient {
 
     private final WebClient fileWebClient;
 
-    public FileClient(@Qualifier("fileWebClient") WebClient fileWebClient) {
+    FileClient(@Qualifier("fileWebClient") WebClient fileWebClient) {
         this.fileWebClient = fileWebClient;
     }
 
-    public Mono<UUID> postFile(File file) {
+    Mono<UUID> postFile(File file) {
 
         return fileWebClient
                 .post()
