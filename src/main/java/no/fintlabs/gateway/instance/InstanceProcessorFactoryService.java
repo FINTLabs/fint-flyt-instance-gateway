@@ -16,17 +16,20 @@ public class InstanceProcessorFactoryService {
     private final InstanceValidationService instanceValidationService;
     private final ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
     private final InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private final FileClient fileClient;
 
     public InstanceProcessorFactoryService(
             IntegrationRequestProducerService integrationRequestProducerService,
             InstanceValidationService instanceValidationService,
             ReceivedInstanceEventProducerService receivedInstanceEventProducerService,
-            InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService
+            InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService,
+            FileClient fileClient
     ) {
         this.integrationRequestProducerService = integrationRequestProducerService;
         this.instanceValidationService = instanceValidationService;
         this.receivedInstanceEventProducerService = receivedInstanceEventProducerService;
         this.instanceReceivalErrorEventProducerService = instanceReceivalErrorEventProducerService;
+        this.fileClient = fileClient;
     }
 
     public <T> InstanceProcessor<T> createInstanceProcessor(
@@ -51,6 +54,7 @@ public class InstanceProcessorFactoryService {
                 instanceValidationService,
                 receivedInstanceEventProducerService,
                 instanceReceivalErrorEventProducerService,
+                fileClient,
                 sourceApplicationIntegrationIdFunction,
                 sourceApplicationInstanceIdFunction,
                 instanceMapper
