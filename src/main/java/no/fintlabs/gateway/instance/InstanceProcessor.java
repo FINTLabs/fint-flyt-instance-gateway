@@ -13,7 +13,7 @@ import no.fintlabs.gateway.instance.model.Integration;
 import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicationIntegrationId;
 import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import no.fintlabs.gateway.instance.validation.InstanceValidationService;
-import no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationUtil;
+import no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +34,7 @@ public class InstanceProcessor<T> {
     private final InstanceValidationService instanceValidationService;
     private final ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
     private final InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private final SourceApplicationAuthorizationService sourceApplicationAuthorizationService;
     private final FileClient fileClient;
     private final Function<T, Optional<String>> sourceApplicationIntegrationIdFunction;
     private final Function<T, Optional<String>> sourceApplicationInstanceIdFunction;
@@ -47,6 +48,7 @@ public class InstanceProcessor<T> {
             InstanceValidationService instanceValidationService,
             ReceivedInstanceEventProducerService receivedInstanceEventProducerService,
             InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService,
+            SourceApplicationAuthorizationService sourceApplicationAuthorizationService,
             FileClient fileClient,
             Function<T, Optional<String>> sourceApplicationIntegrationIdFunction,
             Function<T, Optional<String>> sourceApplicationInstanceIdFunction,
@@ -56,6 +58,7 @@ public class InstanceProcessor<T> {
         this.instanceValidationService = instanceValidationService;
         this.receivedInstanceEventProducerService = receivedInstanceEventProducerService;
         this.instanceReceivalErrorEventProducerService = instanceReceivalErrorEventProducerService;
+        this.sourceApplicationAuthorizationService = sourceApplicationAuthorizationService;
         this.fileClient = fileClient;
         this.sourceApplicationIntegrationIdFunction = sourceApplicationIntegrationIdFunction;
         this.sourceApplicationInstanceIdFunction = sourceApplicationInstanceIdFunction;
@@ -74,7 +77,7 @@ public class InstanceProcessor<T> {
         List<UUID> fileIds = new ArrayList<>();
 
         try {
-            sourceApplicationId = SourceApplicationAuthorizationUtil.getSourceApplicationId(authentication);
+            sourceApplicationId = sourceApplicationAuthorizationService.getSourceApplicationId(authentication);
 
             instanceFlowHeadersBuilder.correlationId(UUID.randomUUID());
             instanceFlowHeadersBuilder.sourceApplicationId(sourceApplicationId);
