@@ -4,6 +4,7 @@ import no.fintlabs.gateway.instance.kafka.InstanceReceivalErrorEventProducerServ
 import no.fintlabs.gateway.instance.kafka.IntegrationRequestProducerService;
 import no.fintlabs.gateway.instance.kafka.ReceivedInstanceEventProducerService;
 import no.fintlabs.gateway.instance.validation.InstanceValidationService;
+import no.fintlabs.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class InstanceProcessorFactoryService {
     private final InstanceValidationService instanceValidationService;
     private final ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
     private final InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private final SourceApplicationAuthorizationService sourceApplicationAuthorizationService;
     private final FileClient fileClient;
 
     public InstanceProcessorFactoryService(
@@ -23,12 +25,14 @@ public class InstanceProcessorFactoryService {
             InstanceValidationService instanceValidationService,
             ReceivedInstanceEventProducerService receivedInstanceEventProducerService,
             InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService,
+            SourceApplicationAuthorizationService sourceApplicationAuthorizationService,
             FileClient fileClient
     ) {
         this.integrationRequestProducerService = integrationRequestProducerService;
         this.instanceValidationService = instanceValidationService;
         this.receivedInstanceEventProducerService = receivedInstanceEventProducerService;
         this.instanceReceivalErrorEventProducerService = instanceReceivalErrorEventProducerService;
+        this.sourceApplicationAuthorizationService = sourceApplicationAuthorizationService;
         this.fileClient = fileClient;
     }
 
@@ -54,6 +58,7 @@ public class InstanceProcessorFactoryService {
                 instanceValidationService,
                 receivedInstanceEventProducerService,
                 instanceReceivalErrorEventProducerService,
+                sourceApplicationAuthorizationService,
                 fileClient,
                 sourceApplicationIntegrationIdFunction,
                 sourceApplicationInstanceIdFunction,

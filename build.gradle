@@ -44,7 +44,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'no.fintlabs:fint-flyt-resource-server:2.0.0'
+    implementation 'no.fintlabs:fint-flyt-resource-server:5.0.0'
 
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.85.Final:osx-aarch_64'
 
@@ -65,8 +65,11 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'cglib:cglib-nodep:3.3.0'
-    testImplementation 'org.spockframework:spock-spring:2.3-groovy-3.0'
-    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+
+
+//    testImplementation 'org.mockito:mockito-core'
+//    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'io.projectreactor:reactor-test'
 }
 
 test {
