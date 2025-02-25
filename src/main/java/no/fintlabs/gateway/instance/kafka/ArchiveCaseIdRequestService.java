@@ -30,7 +30,7 @@ public class ArchiveCaseIdRequestService {
         requestTopicNameParameters = RequestTopicNameParameters
                 .builder()
                 .resource("archive.instance.id")
-                .parameterName("source-application-instance-id")
+                .parameterName("source-application-aggregate-instance-id")
                 .build();
 
         ReplyTopicNameParameters replyTopicNameParameters = ReplyTopicNameParameters
