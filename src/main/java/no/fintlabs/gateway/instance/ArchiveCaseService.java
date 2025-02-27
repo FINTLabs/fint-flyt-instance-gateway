@@ -1,5 +1,6 @@
 package no.fintlabs.gateway.instance;
 
+import lombok.extern.slf4j.Slf4j;
 import no.fint.model.resource.arkiv.noark.SakResource;
 import no.fintlabs.gateway.instance.kafka.ArchiveCaseIdRequestService;
 import no.fintlabs.gateway.instance.kafka.ArchiveCaseRequestService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ArchiveCaseService {
 
     private final ArchiveCaseIdRequestService archiveCaseIdRequestService;
@@ -27,18 +29,21 @@ public class ArchiveCaseService {
     }
 
     public Optional<SakResource> getCase(String archiveCaseId) {
-        return archiveCaseRequestService.getByArchiveCaseId(archiveCaseId);
+        Optional<SakResource> byArchiveCaseId = archiveCaseRequestService.getByArchiveCaseId(archiveCaseId);
+        log.info("Found archive case with id {}", archiveCaseId);
+        return byArchiveCaseId;
     }
 
     public Optional<SakResource> getCase(
             Authentication authentication,
             String sourceApplicationInstanceId
     ) {
-        return archiveCaseIdRequestService.getArchiveCaseId(
-                        sourceApplicationAuthorizationService.getSourceApplicationId(authentication),
-                        sourceApplicationInstanceId
-                )
-                .flatMap(this::getCase);
+        Optional<String> archiveCaseId = archiveCaseIdRequestService.getArchiveCaseId(
+                sourceApplicationAuthorizationService.getSourceApplicationId(authentication),
+                sourceApplicationInstanceId
+        );
+        log.info("Archive case id: {}", archiveCaseId);
+        return archiveCaseId.flatMap(this::getCase);
     }
 
 }
