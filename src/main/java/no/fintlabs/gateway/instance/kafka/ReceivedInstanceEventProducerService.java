@@ -25,7 +25,7 @@ public class ReceivedInstanceEventProducerService {
         this.formDefinitionEventTopicNameParameters = EventTopicNameParameters.builder()
                 .eventName("instance-received")
                 .build();
-        eventTopicService.ensureTopic(formDefinitionEventTopicNameParameters, 15778463000L);
+        eventTopicService.ensureTopic(formDefinitionEventTopicNameParameters, 0);
     }
 
     public void publish(
