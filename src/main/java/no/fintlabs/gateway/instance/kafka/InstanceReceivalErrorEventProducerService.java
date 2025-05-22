@@ -14,7 +14,6 @@ import no.fintlabs.gateway.instance.validation.InstanceValidationException;
 import no.fintlabs.kafka.event.error.Error;
 import no.fintlabs.kafka.event.error.ErrorCollection;
 import no.fintlabs.kafka.event.error.topic.ErrorEventTopicNameParameters;
-import no.fintlabs.kafka.event.error.topic.ErrorEventTopicService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -28,7 +27,6 @@ public class InstanceReceivalErrorEventProducerService {
     private final ErrorEventTopicNameParameters instanceProcessingErrorTopicNameParameters;
 
     public InstanceReceivalErrorEventProducerService(
-            ErrorEventTopicService errorEventTopicService,
             InstanceFlowErrorEventProducer instanceFlowErrorEventProducer,
             InstanceValidationErrorMappingService instanceValidationErrorMappingService
     ) {
@@ -38,8 +36,6 @@ public class InstanceReceivalErrorEventProducerService {
         this.instanceProcessingErrorTopicNameParameters = ErrorEventTopicNameParameters.builder()
                 .errorEventName("instance-receival-error")
                 .build();
-
-        errorEventTopicService.ensureTopic(instanceProcessingErrorTopicNameParameters, 0);
     }
 
     public void publishInstanceValidationErrorEvent(InstanceFlowHeaders instanceFlowHeaders, InstanceValidationException e) {
