@@ -1,16 +1,21 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id 'org.springframework.boot' version '2.7.14' apply false
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '2.7.18' apply false
+    id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'maven-publish'
     id 'java-library'
+    id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
 group = 'no.fintlabs'
-sourceCompatibility = '17'
-targetCompatibility = '17'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 repositories {
     mavenLocal()
@@ -54,9 +59,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'cglib:cglib-nodep:3.3.0'
 
-
-//    testImplementation 'org.mockito:mockito-core'
-//    testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation 'io.projectreactor:reactor-test'
 }
 
