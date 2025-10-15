@@ -1,17 +1,15 @@
 package no.fintlabs.gateway.instance.kafka;
 
-
-import no.fintlabs.kafka.common.topic.TopicCleanupPolicyParameters;
-import no.fintlabs.kafka.requestreply.RequestProducer;
-import no.fintlabs.kafka.requestreply.RequestProducerConfiguration;
-import no.fintlabs.kafka.requestreply.RequestProducerFactory;
-import no.fintlabs.kafka.requestreply.RequestProducerRecord;
-import no.fintlabs.kafka.requestreply.topic.ReplyTopicNameParameters;
-import no.fintlabs.kafka.requestreply.topic.ReplyTopicService;
-import no.fintlabs.kafka.requestreply.topic.RequestTopicNameParameters;
 import no.fintlabs.gateway.instance.model.Integration;
 import no.fintlabs.gateway.instance.model.SourceApplicationIdAndSourceApplicationIntegrationId;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import no.fintlabs.kafka.consuming.ListenerConfiguration;
+import no.fintlabs.kafka.requestreply.RequestProducerRecord;
+import no.fintlabs.kafka.requestreply.RequestTemplate;
+import no.fintlabs.kafka.requestreply.RequestTemplateFactory;
+import no.fintlabs.kafka.requestreply.topic.ReplyTopicService;
+import no.fintlabs.kafka.requestreply.topic.configuration.ReplyTopicConfiguration;
+import no.fintlabs.kafka.requestreply.topic.name.ReplyTopicNameParameters;
+import no.fintlabs.kafka.requestreply.topic.name.RequestTopicNameParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,42 +21,53 @@ public class IntegrationRequestProducerService {
 
     private final RequestTopicNameParameters requestTopicNameParameters;
 
-    private final RequestProducer<SourceApplicationIdAndSourceApplicationIntegrationId, Integration> requestProducer;
+    private final RequestTemplate<SourceApplicationIdAndSourceApplicationIntegrationId, Integration> requestTemplate;
 
     public IntegrationRequestProducerService(
             @Value("${fint.application-id}") String applicationId,
-            RequestProducerFactory requestProducerFactory,
+            RequestTemplateFactory requestTemplateFactory,
             ReplyTopicService replyTopicService
     ) {
         ReplyTopicNameParameters replyTopicNameParameters = ReplyTopicNameParameters.builder()
                 .applicationId(applicationId)
-                .resource("integration")
+                .resourceName("integration")
                 .build();
 
-        replyTopicService.ensureTopic(replyTopicNameParameters, 0, TopicCleanupPolicyParameters.builder().build());
+        replyTopicService.createOrModifyTopic(
+                replyTopicNameParameters,
+                ReplyTopicConfiguration.builder()
+                        .retentionTime(Duration.ofHours(1))
+                        .build()
+        );
 
         this.requestTopicNameParameters = RequestTopicNameParameters.builder()
-                .resource("integration")
+                .resourceName("integration")
                 .parameterName("source-application-id-and-source-application-integration-id")
                 .build();
 
-        this.requestProducer = requestProducerFactory.createProducer(
+        this.requestTemplate = requestTemplateFactory.createTemplate(
                 replyTopicNameParameters,
                 SourceApplicationIdAndSourceApplicationIntegrationId.class,
                 Integration.class,
-                RequestProducerConfiguration
-                        .builder()
-                        .defaultReplyTimeout(Duration.ofSeconds(15))
+                Duration.ofSeconds(15),
+                ListenerConfiguration.stepBuilder()
+                        .groupIdApplicationDefault()
+                        .maxPollRecordsKafkaDefault()
+                        .maxPollIntervalKafkaDefault()
+                        .continueFromPreviousOffsetOnAssignment()
                         .build()
         );
     }
 
-    public Optional<Integration> get(SourceApplicationIdAndSourceApplicationIntegrationId sourceApplicationIdAndSourceApplicationIntegrationId) {
-        return requestProducer.requestAndReceive(
-                RequestProducerRecord.<SourceApplicationIdAndSourceApplicationIntegrationId>builder()
-                        .topicNameParameters(requestTopicNameParameters)
-                        .value(sourceApplicationIdAndSourceApplicationIntegrationId)
-                        .build()
-        ).map(ConsumerRecord::value);
+    public Optional<Integration> get(SourceApplicationIdAndSourceApplicationIntegrationId params) {
+        return Optional.ofNullable(
+                requestTemplate.requestAndReceive(
+                        RequestProducerRecord.<SourceApplicationIdAndSourceApplicationIntegrationId>builder()
+                                .topicNameParameters(requestTopicNameParameters)
+                                .key(null)
+                                .value(params)
+                                .build()
+                ).value()
+        );
     }
 }

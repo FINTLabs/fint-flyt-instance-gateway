@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import reactor.core.publisher.Mono;
@@ -145,7 +147,7 @@ public class InstanceProcessorTest {
         StepVerifier.create(result)
                 .expectNextMatches(response ->
                         response.getStatusCode().is5xxServerError() &&
-                                response.getStatusCodeValue() == 500 &&
+                                response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR &&
                                 Objects.requireNonNull(response.getBody()).toString().contains("File upload failed"))
                 .verifyComplete();
 

@@ -26,7 +26,9 @@ public class ArchiveCaseService {
         this.sourceApplicationAuthorizationService = sourceApplicationAuthorizationService;
     }
 
-    public Optional<SakResource> getCase(String archiveCaseId) {
+    public Optional<SakResource> getCase(
+            String archiveCaseId
+    ) {
         return archiveCaseRequestService.getByArchiveCaseId(archiveCaseId);
     }
 

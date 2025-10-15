@@ -1,9 +1,8 @@
 package no.fintlabs.gateway.instance.validation.constraints;
 
-import org.springframework.util.Base64Utils;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Base64;
 
 public class Base64Validator implements ConstraintValidator<ValidBase64, String> {
 
@@ -14,7 +13,7 @@ public class Base64Validator implements ConstraintValidator<ValidBase64, String>
 
     private boolean canBeDecoded(String value) {
         try {
-            Base64Utils.decodeFromString(value);
+            Base64.getDecoder().decode(value);
         } catch (IllegalArgumentException e) {
             return false;
         }

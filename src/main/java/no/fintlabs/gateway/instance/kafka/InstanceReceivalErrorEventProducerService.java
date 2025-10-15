@@ -1,9 +1,10 @@
 package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducer;
-import no.fintlabs.flyt.kafka.event.error.InstanceFlowErrorEventProducerRecord;
-import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
+import no.fintlabs.flyt.kafka.instanceflow.headers.InstanceFlowHeaders;
+import no.fintlabs.flyt.kafka.instanceflow.producing.InstanceFlowProducerRecord;
+import no.fintlabs.flyt.kafka.instanceflow.producing.InstanceFlowTemplate;
+import no.fintlabs.flyt.kafka.instanceflow.producing.InstanceFlowTemplateFactory;
 import no.fintlabs.gateway.instance.ErrorCode;
 import no.fintlabs.gateway.instance.exception.AbstractInstanceRejectedException;
 import no.fintlabs.gateway.instance.exception.FileUploadException;
@@ -11,9 +12,9 @@ import no.fintlabs.gateway.instance.exception.IntegrationDeactivatedException;
 import no.fintlabs.gateway.instance.exception.NoIntegrationException;
 import no.fintlabs.gateway.instance.validation.InstanceValidationErrorMappingService;
 import no.fintlabs.gateway.instance.validation.InstanceValidationException;
-import no.fintlabs.kafka.event.error.Error;
-import no.fintlabs.kafka.event.error.ErrorCollection;
-import no.fintlabs.kafka.event.error.topic.ErrorEventTopicNameParameters;
+import no.fintlabs.kafka.model.Error;
+import no.fintlabs.kafka.model.ErrorCollection;
+import no.fintlabs.kafka.topic.name.ErrorEventTopicNameParameters;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -22,15 +23,15 @@ import java.util.Map;
 @Service
 public class InstanceReceivalErrorEventProducerService {
 
-    private final InstanceFlowErrorEventProducer instanceFlowErrorEventProducer;
+    private final InstanceFlowTemplate<ErrorCollection> instanceFlowTemplate;
     private final InstanceValidationErrorMappingService instanceValidationErrorMappingService;
     private final ErrorEventTopicNameParameters instanceProcessingErrorTopicNameParameters;
 
     public InstanceReceivalErrorEventProducerService(
-            InstanceFlowErrorEventProducer instanceFlowErrorEventProducer,
+            InstanceFlowTemplateFactory instanceFlowTemplateFactory,
             InstanceValidationErrorMappingService instanceValidationErrorMappingService
     ) {
-        this.instanceFlowErrorEventProducer = instanceFlowErrorEventProducer;
+        this.instanceFlowTemplate = instanceFlowTemplateFactory.createTemplate(ErrorCollection.class);
         this.instanceValidationErrorMappingService = instanceValidationErrorMappingService;
 
         this.instanceProcessingErrorTopicNameParameters = ErrorEventTopicNameParameters.builder()
@@ -39,23 +40,23 @@ public class InstanceReceivalErrorEventProducerService {
     }
 
     public void publishInstanceValidationErrorEvent(InstanceFlowHeaders instanceFlowHeaders, InstanceValidationException e) {
-        instanceFlowErrorEventProducer.send(
-                InstanceFlowErrorEventProducerRecord
-                        .builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord
+                        .<ErrorCollection>builder()
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
-                        .errorCollection(instanceValidationErrorMappingService.map(e))
+                        .value(instanceValidationErrorMappingService.map(e))
                         .build()
         );
     }
 
     public void publishInstanceRejectedErrorEvent(InstanceFlowHeaders instanceFlowHeaders, AbstractInstanceRejectedException e) {
-        instanceFlowErrorEventProducer.send(
-                InstanceFlowErrorEventProducerRecord
-                        .builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord
+                        .<ErrorCollection>builder()
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
-                        .errorCollection(new ErrorCollection(Error
+                        .value(new ErrorCollection(Error
                                 .builder()
                                 .errorCode(ErrorCode.INSTANCE_REJECTED_ERROR.getCode())
                                 .args(Map.of("message", e.getMessage()))
@@ -66,12 +67,12 @@ public class InstanceReceivalErrorEventProducerService {
     }
 
     public void publishInstanceFileUploadErrorEvent(InstanceFlowHeaders instanceFlowHeaders, FileUploadException e) {
-        instanceFlowErrorEventProducer.send(
-                InstanceFlowErrorEventProducerRecord
-                        .builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord
+                        .<ErrorCollection>builder()
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
-                        .errorCollection(new ErrorCollection(Error
+                        .value(new ErrorCollection(Error
                                 .builder()
                                 .errorCode(ErrorCode.FILE_UPLOAD_ERROR.getCode())
                                 .args(Map.of(
@@ -86,12 +87,12 @@ public class InstanceReceivalErrorEventProducerService {
     }
 
     public void publishNoIntegrationFoundErrorEvent(InstanceFlowHeaders instanceFlowHeaders, NoIntegrationException e) {
-        instanceFlowErrorEventProducer.send(
-                InstanceFlowErrorEventProducerRecord
-                        .builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord
+                        .<ErrorCollection>builder()
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
-                        .errorCollection(new ErrorCollection(Error
+                        .value(new ErrorCollection(Error
                                 .builder()
                                 .errorCode(ErrorCode.NO_INTEGRATION_FOUND_ERROR.getCode())
                                 .args(Map.of(
@@ -107,12 +108,12 @@ public class InstanceReceivalErrorEventProducerService {
     }
 
     public void publishIntegrationDeactivatedErrorEvent(InstanceFlowHeaders instanceFlowHeaders, IntegrationDeactivatedException e) {
-        instanceFlowErrorEventProducer.send(
-                InstanceFlowErrorEventProducerRecord
-                        .builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord
+                        .<ErrorCollection>builder()
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
-                        .errorCollection(new ErrorCollection(Error
+                        .value(new ErrorCollection(Error
                                 .builder()
                                 .errorCode(ErrorCode.INTEGRATION_DEACTIVATED_ERROR.getCode())
                                 .args(Map.of(
@@ -128,12 +129,12 @@ public class InstanceReceivalErrorEventProducerService {
     }
 
     public void publishGeneralSystemErrorEvent(InstanceFlowHeaders instanceFlowHeaders) {
-        instanceFlowErrorEventProducer.send(
-                InstanceFlowErrorEventProducerRecord
-                        .builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord
+                        .<ErrorCollection>builder()
                         .topicNameParameters(instanceProcessingErrorTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
-                        .errorCollection(new ErrorCollection(Error
+                        .value(new ErrorCollection(Error
                                 .builder()
                                 .errorCode(ErrorCode.GENERAL_SYSTEM_ERROR.getCode())
                                 .build()))

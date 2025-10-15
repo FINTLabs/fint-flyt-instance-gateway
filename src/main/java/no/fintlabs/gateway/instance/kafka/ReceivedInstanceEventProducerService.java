@@ -1,25 +1,26 @@
 package no.fintlabs.gateway.instance.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducer;
-import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerFactory;
-import no.fintlabs.flyt.kafka.event.InstanceFlowEventProducerRecord;
-import no.fintlabs.flyt.kafka.headers.InstanceFlowHeaders;
+import no.fintlabs.flyt.kafka.instanceflow.headers.InstanceFlowHeaders;
+import no.fintlabs.flyt.kafka.instanceflow.producing.InstanceFlowProducerRecord;
+import no.fintlabs.flyt.kafka.instanceflow.producing.InstanceFlowTemplate;
+import no.fintlabs.flyt.kafka.instanceflow.producing.InstanceFlowTemplateFactory;
 import no.fintlabs.gateway.instance.model.instance.InstanceObject;
-import no.fintlabs.kafka.event.topic.EventTopicNameParameters;
+import no.fintlabs.kafka.topic.name.EventTopicNameParameters;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class ReceivedInstanceEventProducerService {
 
-    private final InstanceFlowEventProducer<InstanceObject> instanceProducer;
+    private final InstanceFlowTemplate<InstanceObject> instanceFlowTemplate;
     private final EventTopicNameParameters formDefinitionEventTopicNameParameters;
 
     public ReceivedInstanceEventProducerService(
-            InstanceFlowEventProducerFactory instanceFlowEventProducerFactory
+            InstanceFlowTemplateFactory instanceFlowTemplateFactory
     ) {
-        this.instanceProducer = instanceFlowEventProducerFactory.createProducer(InstanceObject.class);
+        this.instanceFlowTemplate = instanceFlowTemplateFactory.createTemplate(InstanceObject.class);
+
         this.formDefinitionEventTopicNameParameters = EventTopicNameParameters.builder()
                 .eventName("instance-received")
                 .build();
@@ -29,8 +30,8 @@ public class ReceivedInstanceEventProducerService {
             InstanceFlowHeaders instanceFlowHeaders,
             InstanceObject instance
     ) {
-        instanceProducer.send(
-                InstanceFlowEventProducerRecord.<InstanceObject>builder()
+        instanceFlowTemplate.send(
+                InstanceFlowProducerRecord.<InstanceObject>builder()
                         .topicNameParameters(formDefinitionEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(instance)
