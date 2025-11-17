@@ -15,6 +15,7 @@ import no.novari.flyt.kafka.instanceflow.producing.InstanceFlowTemplateFactory;
 import no.novari.kafka.model.Error;
 import no.novari.kafka.model.ErrorCollection;
 import no.novari.kafka.topic.name.ErrorEventTopicNameParameters;
+import no.novari.kafka.topic.name.TopicNamePrefixParameters;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -34,7 +35,14 @@ public class InstanceReceivalErrorEventProducerService {
         this.instanceFlowTemplate = instanceFlowTemplateFactory.createTemplate(ErrorCollection.class);
         this.instanceValidationErrorMappingService = instanceValidationErrorMappingService;
 
-        this.instanceProcessingErrorTopicNameParameters = ErrorEventTopicNameParameters.builder()
+        this.instanceProcessingErrorTopicNameParameters = ErrorEventTopicNameParameters
+                .builder()
+                .topicNamePrefixParameters(TopicNamePrefixParameters
+                        .builder()
+                        .orgIdApplicationDefault()
+                        .domainContextApplicationDefault()
+                        .build()
+                )
                 .errorEventName("instance-receival-error")
                 .build();
     }

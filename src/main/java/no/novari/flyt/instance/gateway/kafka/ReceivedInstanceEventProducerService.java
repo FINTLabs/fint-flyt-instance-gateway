@@ -7,6 +7,7 @@ import no.novari.flyt.kafka.instanceflow.producing.InstanceFlowProducerRecord;
 import no.novari.flyt.kafka.instanceflow.producing.InstanceFlowTemplate;
 import no.novari.flyt.kafka.instanceflow.producing.InstanceFlowTemplateFactory;
 import no.novari.kafka.topic.name.EventTopicNameParameters;
+import no.novari.kafka.topic.name.TopicNamePrefixParameters;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,7 +22,14 @@ public class ReceivedInstanceEventProducerService {
     ) {
         this.instanceFlowTemplate = instanceFlowTemplateFactory.createTemplate(InstanceObject.class);
 
-        this.formDefinitionEventTopicNameParameters = EventTopicNameParameters.builder()
+        this.formDefinitionEventTopicNameParameters = EventTopicNameParameters
+                .builder()
+                .topicNamePrefixParameters(TopicNamePrefixParameters
+                        .builder()
+                        .orgIdApplicationDefault()
+                        .domainContextApplicationDefault()
+                        .build()
+                )
                 .eventName("instance-received")
                 .build();
     }

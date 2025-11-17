@@ -10,6 +10,7 @@ import no.novari.kafka.requestreply.topic.ReplyTopicService;
 import no.novari.kafka.requestreply.topic.configuration.ReplyTopicConfiguration;
 import no.novari.kafka.requestreply.topic.name.ReplyTopicNameParameters;
 import no.novari.kafka.requestreply.topic.name.RequestTopicNameParameters;
+import no.novari.kafka.topic.name.TopicNamePrefixParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +29,34 @@ public class IntegrationRequestProducerService {
             RequestTemplateFactory requestTemplateFactory,
             ReplyTopicService replyTopicService
     ) {
-        ReplyTopicNameParameters replyTopicNameParameters = ReplyTopicNameParameters.builder()
+        ReplyTopicNameParameters replyTopicNameParameters = ReplyTopicNameParameters
+                .builder()
+                .topicNamePrefixParameters(TopicNamePrefixParameters
+                        .builder()
+                        .orgIdApplicationDefault()
+                        .domainContextApplicationDefault()
+                        .build()
+                )
                 .applicationId(applicationId)
                 .resourceName("integration")
                 .build();
 
         replyTopicService.createOrModifyTopic(
                 replyTopicNameParameters,
-                ReplyTopicConfiguration.builder()
+                ReplyTopicConfiguration
+                        .builder()
                         .retentionTime(Duration.ofHours(1))
                         .build()
         );
 
-        this.requestTopicNameParameters = RequestTopicNameParameters.builder()
+        this.requestTopicNameParameters = RequestTopicNameParameters
+                .builder()
+                .topicNamePrefixParameters(TopicNamePrefixParameters
+                        .builder()
+                        .orgIdApplicationDefault()
+                        .domainContextApplicationDefault()
+                        .build()
+                )
                 .resourceName("integration")
                 .parameterName("source-application-id-and-source-application-integration-id")
                 .build();

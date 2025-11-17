@@ -30,6 +30,12 @@ public class ArchiveCaseIdRequestService {
         String resourceName = "archive-instance-id";
         requestTopicNameParameters = RequestTopicNameParameters
                 .builder()
+                .topicNamePrefixParameters(TopicNamePrefixParameters
+                        .builder()
+                        .orgIdApplicationDefault()
+                        .domainContextApplicationDefault()
+                        .build()
+                )
                 .resourceName(resourceName)
                 .parameterName("source-application-instance-id")
                 .build();
@@ -48,7 +54,8 @@ public class ArchiveCaseIdRequestService {
 
         replyTopicService.createOrModifyTopic(
                 replyTopicNameParameters,
-                ReplyTopicConfiguration.builder()
+                ReplyTopicConfiguration
+                        .builder()
                         .retentionTime(Duration.ofHours(1))
                         .build()
         );
@@ -71,10 +78,12 @@ public class ArchiveCaseIdRequestService {
     public Optional<String> getArchiveCaseId(Long sourceApplicationId, String sourceApplicationInstanceId) {
         return Optional.ofNullable(
                 requestTemplate.requestAndReceive(
-                                RequestProducerRecord.<ArchiveCaseIdRequestParams>builder()
+                                RequestProducerRecord
+                                        .<ArchiveCaseIdRequestParams>builder()
                                         .topicNameParameters(requestTopicNameParameters)
                                         .key(sourceApplicationInstanceId)
-                                        .value(ArchiveCaseIdRequestParams.builder()
+                                        .value(ArchiveCaseIdRequestParams
+                                                .builder()
                                                 .sourceApplicationId(sourceApplicationId)
                                                 .sourceApplicationInstanceId(sourceApplicationInstanceId)
                                                 .build()
