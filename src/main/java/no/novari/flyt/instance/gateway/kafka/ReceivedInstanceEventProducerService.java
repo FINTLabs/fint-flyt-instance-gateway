@@ -25,7 +25,7 @@ public class ReceivedInstanceEventProducerService {
         this.formDefinitionEventTopicNameParameters = EventTopicNameParameters
                 .builder()
                 .topicNamePrefixParameters(TopicNamePrefixParameters
-                        .builder()
+                        .stepBuilder()
                         .orgIdApplicationDefault()
                         .domainContextApplicationDefault()
                         .build()

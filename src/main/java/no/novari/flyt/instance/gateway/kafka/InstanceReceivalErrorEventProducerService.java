@@ -38,7 +38,7 @@ public class InstanceReceivalErrorEventProducerService {
         this.instanceProcessingErrorTopicNameParameters = ErrorEventTopicNameParameters
                 .builder()
                 .topicNamePrefixParameters(TopicNamePrefixParameters
-                        .builder()
+                        .stepBuilder()
                         .orgIdApplicationDefault()
                         .domainContextApplicationDefault()
                         .build()

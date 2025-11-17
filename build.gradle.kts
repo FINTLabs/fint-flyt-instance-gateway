@@ -44,9 +44,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.kafka:spring-kafka")
 
-    implementation("no.novari:flyt-resource-server:6.0.0-rc-22")
-    implementation("no.novari:kafka:5.0.0-rc-16")
-    implementation("no.novari:flyt-kafka:4.0.0-rc-6")
+    implementation("no.novari:flyt-resource-server:6.0.0-rc-25")
+    implementation("no.novari:kafka:5.0.0-rc-19")
+    implementation("no.novari:flyt-kafka:4.0.0-rc-7")
 
     implementation("no.fint:fint-arkiv-resource-model-java:$apiVersion")
 
