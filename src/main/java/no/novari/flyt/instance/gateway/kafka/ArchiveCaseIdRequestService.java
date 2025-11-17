@@ -23,7 +23,7 @@ public class ArchiveCaseIdRequestService {
     private final RequestTopicNameParameters requestTopicNameParameters;
 
     public ArchiveCaseIdRequestService(
-            @Value("${fint.kafka.application-id}") String applicationId,
+            @Value("${novari.kafka.application-id}") String applicationId,
             ReplyTopicService replyTopicService,
             RequestTemplateFactory requestTemplateFactory
     ) {

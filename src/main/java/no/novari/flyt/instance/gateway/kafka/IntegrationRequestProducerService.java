@@ -25,7 +25,7 @@ public class IntegrationRequestProducerService {
     private final RequestTemplate<SourceApplicationIdAndSourceApplicationIntegrationId, Integration> requestTemplate;
 
     public IntegrationRequestProducerService(
-            @Value("${fint.application-id}") String applicationId,
+            @Value("${novari.application-id}") String applicationId,
             RequestTemplateFactory requestTemplateFactory,
             ReplyTopicService replyTopicService
     ) {

@@ -63,7 +63,7 @@ public class FileWebClientConfiguration {
 
     @Bean
     public WebClient fileWebClient(
-            @Value("${fint.flyt.file-service-url}") String fileServiceUrl,
+            @Value("${novari.flyt.file-service-url}") String fileServiceUrl,
             @Qualifier("fileAuthorizedClientManager") Optional<ReactiveOAuth2AuthorizedClientManager> authorizedClientManager,
             ClientHttpConnector clientHttpConnector
     ) {
