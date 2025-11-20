@@ -1,0 +1,9 @@
+novari:
+  flyt:
+    instance-gateway:
+      kafka:
+        topic:
+          instance-processing-events:
+            retention-time: "4d"
+            cleanup-frequency: NORMAL
+            partitions: 1

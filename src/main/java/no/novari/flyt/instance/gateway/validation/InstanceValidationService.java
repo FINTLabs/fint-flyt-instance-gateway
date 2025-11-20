@@ -1,13 +1,13 @@
 package no.novari.flyt.instance.gateway.validation;
 
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;

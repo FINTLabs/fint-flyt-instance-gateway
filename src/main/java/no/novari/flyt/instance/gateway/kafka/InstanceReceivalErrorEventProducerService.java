@@ -2,6 +2,7 @@ package no.novari.flyt.instance.gateway.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import no.novari.flyt.instance.gateway.ErrorCode;
+import no.novari.flyt.instance.gateway.config.properties.InstanceProcessingEventsConfigurationProperties;
 import no.novari.flyt.instance.gateway.exception.AbstractInstanceRejectedException;
 import no.novari.flyt.instance.gateway.exception.FileUploadException;
 import no.novari.flyt.instance.gateway.exception.IntegrationDeactivatedException;
@@ -14,6 +15,8 @@ import no.novari.flyt.kafka.instanceflow.producing.InstanceFlowTemplate;
 import no.novari.flyt.kafka.instanceflow.producing.InstanceFlowTemplateFactory;
 import no.novari.kafka.model.Error;
 import no.novari.kafka.model.ErrorCollection;
+import no.novari.kafka.topic.ErrorEventTopicService;
+import no.novari.kafka.topic.configuration.EventTopicConfiguration;
 import no.novari.kafka.topic.name.ErrorEventTopicNameParameters;
 import no.novari.kafka.topic.name.TopicNamePrefixParameters;
 import org.springframework.stereotype.Service;
@@ -26,16 +29,18 @@ public class InstanceReceivalErrorEventProducerService {
 
     private final InstanceFlowTemplate<ErrorCollection> instanceFlowTemplate;
     private final InstanceValidationErrorMappingService instanceValidationErrorMappingService;
-    private final ErrorEventTopicNameParameters instanceProcessingErrorTopicNameParameters;
+    private final ErrorEventTopicNameParameters errorEventTopicNameParameters;
 
     public InstanceReceivalErrorEventProducerService(
             InstanceFlowTemplateFactory instanceFlowTemplateFactory,
-            InstanceValidationErrorMappingService instanceValidationErrorMappingService
+            InstanceValidationErrorMappingService instanceValidationErrorMappingService,
+            ErrorEventTopicService errorEventTopicService,
+            InstanceProcessingEventsConfigurationProperties instanceProcessingEventsConfigurationProperties
     ) {
         this.instanceFlowTemplate = instanceFlowTemplateFactory.createTemplate(ErrorCollection.class);
         this.instanceValidationErrorMappingService = instanceValidationErrorMappingService;
 
-        this.instanceProcessingErrorTopicNameParameters = ErrorEventTopicNameParameters
+        this.errorEventTopicNameParameters = ErrorEventTopicNameParameters
                 .builder()
                 .topicNamePrefixParameters(TopicNamePrefixParameters
                         .stepBuilder()
@@ -45,13 +50,22 @@ public class InstanceReceivalErrorEventProducerService {
                 )
                 .errorEventName("instance-receival-error")
                 .build();
+
+        // Must match setup in `fint-flyt-web-instance-gateway`
+        errorEventTopicService.createOrModifyTopic(errorEventTopicNameParameters, EventTopicConfiguration
+                .stepBuilder()
+                .partitions(instanceProcessingEventsConfigurationProperties.getPartitions())
+                .retentionTime(instanceProcessingEventsConfigurationProperties.getRetentionTime())
+                .cleanupFrequency(instanceProcessingEventsConfigurationProperties.getCleanupFrequency())
+                .build()
+        );
     }
 
     public void publishInstanceValidationErrorEvent(InstanceFlowHeaders instanceFlowHeaders, InstanceValidationException e) {
         instanceFlowTemplate.send(
                 InstanceFlowProducerRecord
                         .<ErrorCollection>builder()
-                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .topicNameParameters(errorEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(instanceValidationErrorMappingService.map(e))
                         .build()
@@ -62,7 +76,7 @@ public class InstanceReceivalErrorEventProducerService {
         instanceFlowTemplate.send(
                 InstanceFlowProducerRecord
                         .<ErrorCollection>builder()
-                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .topicNameParameters(errorEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(new ErrorCollection(Error
                                 .builder()
@@ -78,7 +92,7 @@ public class InstanceReceivalErrorEventProducerService {
         instanceFlowTemplate.send(
                 InstanceFlowProducerRecord
                         .<ErrorCollection>builder()
-                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .topicNameParameters(errorEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(new ErrorCollection(Error
                                 .builder()
@@ -98,7 +112,7 @@ public class InstanceReceivalErrorEventProducerService {
         instanceFlowTemplate.send(
                 InstanceFlowProducerRecord
                         .<ErrorCollection>builder()
-                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .topicNameParameters(errorEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(new ErrorCollection(Error
                                 .builder()
@@ -119,7 +133,7 @@ public class InstanceReceivalErrorEventProducerService {
         instanceFlowTemplate.send(
                 InstanceFlowProducerRecord
                         .<ErrorCollection>builder()
-                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .topicNameParameters(errorEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(new ErrorCollection(Error
                                 .builder()
@@ -140,7 +154,7 @@ public class InstanceReceivalErrorEventProducerService {
         instanceFlowTemplate.send(
                 InstanceFlowProducerRecord
                         .<ErrorCollection>builder()
-                        .topicNameParameters(instanceProcessingErrorTopicNameParameters)
+                        .topicNameParameters(errorEventTopicNameParameters)
                         .instanceFlowHeaders(instanceFlowHeaders)
                         .value(new ErrorCollection(Error
                                 .builder()

@@ -1,12 +1,12 @@
-package no.novari.flyt.instance.gateway.web;
+package no.novari.flyt.instance.gateway.config;
 
 import io.netty.channel.ChannelOption;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
-@Configuration
+@AutoConfiguration
 public class FileWebClientConfiguration {
 
     @Bean
