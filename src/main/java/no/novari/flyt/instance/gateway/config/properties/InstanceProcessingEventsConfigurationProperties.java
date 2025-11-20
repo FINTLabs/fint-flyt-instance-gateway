@@ -9,7 +9,7 @@ import java.time.Duration;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "novari.flyt.instance-gateway.kafka.topic.instance-processing-events")
+@ConfigurationProperties(prefix = "novari.flyt.instance-gateway.kafka.topic.instance-receival-error")
 public class InstanceProcessingEventsConfigurationProperties {
     private Duration retentionTime;
     private EventCleanupFrequency cleanupFrequency;

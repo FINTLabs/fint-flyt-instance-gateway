@@ -3,7 +3,7 @@ novari:
     instance-gateway:
       kafka:
         topic:
-          instance-processing-events:
+          instance-receival-error:
             retention-time: "4d"
             cleanup-frequency: NORMAL
             partitions: 1
