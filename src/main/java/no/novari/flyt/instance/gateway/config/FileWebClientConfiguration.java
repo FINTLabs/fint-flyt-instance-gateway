@@ -28,7 +28,7 @@ import java.util.Optional;
 @AutoConfiguration
 public class FileWebClientConfiguration {
 
-    @Bean
+    @Bean(name = "fileClientHttpConnector")
     public ClientHttpConnector clientHttpConnector() {
         return new ReactorClientHttpConnector(HttpClient.create(
                         ConnectionProvider
@@ -65,7 +65,7 @@ public class FileWebClientConfiguration {
     public WebClient fileWebClient(
             @Value("${novari.flyt.file-service-url}") String fileServiceUrl,
             @Qualifier("fileAuthorizedClientManager") Optional<ReactiveOAuth2AuthorizedClientManager> authorizedClientManager,
-            ClientHttpConnector clientHttpConnector
+            @Qualifier("fileClientHttpConnector") ClientHttpConnector clientHttpConnector
     ) {
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1))
