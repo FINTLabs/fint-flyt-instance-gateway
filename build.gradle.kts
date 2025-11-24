@@ -47,9 +47,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
 
-    implementation("no.novari:flyt-resource-server:6.0.0-rc-25")
-    implementation("no.novari:kafka:5.0.0-rc-19")
-    implementation("no.novari:flyt-kafka:4.0.0-rc-7")
+    implementation("no.novari:flyt-resource-server:6.0.0-rc-26")
+    implementation("no.novari:kafka:5.0.0-rc-20")
+    implementation("no.novari:flyt-kafka:4.0.0-rc-8")
 
     implementation("no.fint:fint-arkiv-resource-model-java:$apiVersion")
 
