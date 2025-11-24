@@ -1,7 +1,5 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
-val apiVersion: String by project
-
 plugins {
     id("org.springframework.boot") version "3.5.7" apply false
     id("io.spring.dependency-management") version "1.1.7"
@@ -34,11 +32,10 @@ dependencyManagement {
     }
 }
 
+var fintResourceModelVersion = "3.21.10"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.springframework.security:spring-security-oauth2-client")
-    implementation("org.springframework.security:spring-security-core")
     implementation("org.springframework:spring-webflux")
 
     implementation("io.projectreactor.netty:reactor-netty")
@@ -47,11 +44,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
 
-    implementation("no.novari:flyt-resource-server:6.0.0-rc-26")
-    implementation("no.novari:kafka:5.0.0-rc-20")
-    implementation("no.novari:flyt-kafka:4.0.0-rc-8")
+    implementation("no.novari:flyt-resource-server:6.0.0-rc-27")
+    implementation("no.novari:flyt-kafka:4.0.0-rc-9")
 
-    implementation("no.fint:fint-arkiv-resource-model-java:$apiVersion")
+    implementation("no.fint:fint-arkiv-resource-model-java:$fintResourceModelVersion")
 
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")

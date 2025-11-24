@@ -1,7 +1,8 @@
 package no.novari.flyt.instance.gateway.validation.constraints;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.Base64;
 
 public class Base64Validator implements ConstraintValidator<ValidBase64, String> {
