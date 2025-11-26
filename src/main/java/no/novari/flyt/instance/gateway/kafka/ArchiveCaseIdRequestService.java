@@ -22,6 +22,9 @@ public class ArchiveCaseIdRequestService {
     private final RequestTemplate<ArchiveCaseIdRequestParams, String> requestTemplate;
     private final RequestTopicNameParameters requestTopicNameParameters;
 
+    public static final Duration RETENTION_TIME = Duration.ofMinutes(10);
+    public static final Duration REPLY_TIMEOUT = Duration.ofSeconds(10);
+
     public ArchiveCaseIdRequestService(
             @Value("${novari.kafka.application-id}") String applicationId,
             ReplyTopicService replyTopicService,
@@ -56,7 +59,7 @@ public class ArchiveCaseIdRequestService {
                 replyTopicNameParameters,
                 ReplyTopicConfiguration
                         .builder()
-                        .retentionTime(Duration.ofHours(1))
+                        .retentionTime(RETENTION_TIME)
                         .build()
         );
 
@@ -64,7 +67,7 @@ public class ArchiveCaseIdRequestService {
                 replyTopicNameParameters,
                 ArchiveCaseIdRequestParams.class,
                 String.class,
-                Duration.ofSeconds(10),
+                REPLY_TIMEOUT,
                 ListenerConfiguration
                         .stepBuilder()
                         .groupIdApplicationDefault()

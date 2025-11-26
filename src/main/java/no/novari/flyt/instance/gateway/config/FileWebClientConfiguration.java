@@ -28,17 +28,23 @@ import java.util.Optional;
 @AutoConfiguration
 public class FileWebClientConfiguration {
 
+    public static final Duration MAX_LIFE_TIME = Duration.ofMinutes(30);
+    public static final Duration MAX_IDLE_TIME = Duration.ofMinutes(5);
+    public static final int CONNECT_TIMEOUT_MS = 300000;
+    public static final Duration MAX_READ_OPERATION_INTERVAL = Duration.ofMinutes(5);
+
     @Bean(name = "fileClientHttpConnector")
     public ClientHttpConnector clientHttpConnector() {
-        return new ReactorClientHttpConnector(HttpClient.create(
-                        ConnectionProvider
-                                .builder("laidback")
-                                .maxLifeTime(Duration.ofMinutes(30))
-                                .maxIdleTime(Duration.ofMinutes(5))
-                                .build())
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 300000)
-                .responseTimeout(Duration.ofMinutes(5)
-                ));
+        return new ReactorClientHttpConnector(
+                HttpClient.create(
+                                ConnectionProvider
+                                        .builder("laidback")
+                                        .maxLifeTime(MAX_LIFE_TIME)
+                                        .maxIdleTime(MAX_IDLE_TIME)
+                                        .build())
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT_MS)
+                        .responseTimeout(MAX_READ_OPERATION_INTERVAL)
+        );
     }
 
     @Bean

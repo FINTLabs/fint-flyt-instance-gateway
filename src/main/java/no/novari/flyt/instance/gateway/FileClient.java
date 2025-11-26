@@ -16,6 +16,9 @@ class FileClient {
 
     private final WebClient fileWebClient;
 
+    private static final int MAX_ATTEMPTS = 5;
+    private static final Duration MIN_BACKOFF = Duration.ofSeconds(1);
+
     FileClient(@Qualifier("fileWebClient") WebClient fileWebClient) {
         this.fileWebClient = fileWebClient;
     }
@@ -33,7 +36,7 @@ class FileClient {
                         return clientResponse.bodyToMono(UUID.class);
                     }
                 })
-                .retryWhen(Retry.backoff(5, Duration.ofSeconds(1))
+                .retryWhen(Retry.backoff(MAX_ATTEMPTS, MIN_BACKOFF)
                         .onRetryExhaustedThrow((spec, signal) -> signal.failure())
                 );
     }

@@ -21,8 +21,10 @@ import java.util.Optional;
 public class IntegrationRequestProducerService {
 
     private final RequestTopicNameParameters requestTopicNameParameters;
-
     private final RequestTemplate<SourceApplicationIdAndSourceApplicationIntegrationId, Integration> requestTemplate;
+
+    public static final Duration RETENTION_TIME = Duration.ofMinutes(10);
+    public static final Duration REPLY_TIMEOUT = Duration.ofSeconds(15);
 
     public IntegrationRequestProducerService(
             @Value("${fint.application-id}") String applicationId,
@@ -45,7 +47,7 @@ public class IntegrationRequestProducerService {
                 replyTopicNameParameters,
                 ReplyTopicConfiguration
                         .builder()
-                        .retentionTime(Duration.ofHours(1))
+                        .retentionTime(RETENTION_TIME)
                         .build()
         );
 
@@ -65,7 +67,7 @@ public class IntegrationRequestProducerService {
                 replyTopicNameParameters,
                 SourceApplicationIdAndSourceApplicationIntegrationId.class,
                 Integration.class,
-                Duration.ofSeconds(15),
+                REPLY_TIMEOUT,
                 ListenerConfiguration.stepBuilder()
                         .groupIdApplicationDefault()
                         .maxPollRecordsKafkaDefault()

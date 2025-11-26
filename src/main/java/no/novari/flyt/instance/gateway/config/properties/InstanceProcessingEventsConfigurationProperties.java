@@ -11,7 +11,7 @@ import java.time.Duration;
 @Setter
 @ConfigurationProperties(prefix = "novari.flyt.instance-gateway.kafka.topic.instance-receival-error")
 public class InstanceProcessingEventsConfigurationProperties {
-    private Duration retentionTime = Duration.ofDays(4);
+    private Duration retentionTime = Duration.ofDays(7);
     private EventCleanupFrequency cleanupFrequency = EventCleanupFrequency.NORMAL;
     private int partitions = 1;
 }
