@@ -3,6 +3,7 @@ package no.novari.flyt.instance.gateway.error;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@ConditionalOnProperty("spring.http.codecs.max-in-memory-size")
 public class RequestSizeLimitFilter implements WebFilter {
 
     private static final Map<String, String> PAYLOAD_TOO_LARGE_BODY = Map.of(
@@ -36,7 +38,7 @@ public class RequestSizeLimitFilter implements WebFilter {
     private final ObjectMapper objectMapper;
 
     public RequestSizeLimitFilter(
-            @Value("${spring.http.codec.max-in-memory-size}") DataSize maxInMemorySize,
+            @Value("${spring.http.codecs.max-in-memory-size}") DataSize maxInMemorySize,
             ObjectMapper objectMapper
     ) {
         this.maxInMemoryBytes = maxInMemorySize.toBytes();
