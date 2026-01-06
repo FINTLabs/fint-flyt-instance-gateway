@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Slf4j
 public class InstanceProcessor<T> {
@@ -70,6 +71,28 @@ public class InstanceProcessor<T> {
             T incomingInstance
     ) {
 
+        return processInstance(
+                incomingInstance,
+                () -> sourceApplicationAuthorizationService.getSourceApplicationId(authentication)
+        );
+    }
+
+    public Mono<ResponseEntity<Object>> processInstance(
+            Long sourceApplicationId,
+            T incomingInstance
+    ) {
+
+        return processInstance(
+                incomingInstance,
+                () -> sourceApplicationId
+        );
+    }
+
+    private Mono<ResponseEntity<Object>> processInstance(
+            T incomingInstance,
+            Supplier<Long> sourceApplicationIdSupplier
+    ) {
+
         InstanceFlowHeaders.InstanceFlowHeadersBuilder instanceFlowHeadersBuilder = InstanceFlowHeaders.builder();
 
         Long sourceApplicationId;
@@ -77,7 +100,7 @@ public class InstanceProcessor<T> {
         List<UUID> fileIds = new ArrayList<>();
 
         try {
-            sourceApplicationId = sourceApplicationAuthorizationService.getSourceApplicationId(authentication);
+            sourceApplicationId = sourceApplicationIdSupplier.get();
 
             instanceFlowHeadersBuilder.correlationId(UUID.randomUUID());
             instanceFlowHeadersBuilder.sourceApplicationId(sourceApplicationId);

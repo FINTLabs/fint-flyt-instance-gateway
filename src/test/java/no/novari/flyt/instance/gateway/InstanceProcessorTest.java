@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -106,6 +108,27 @@ public class InstanceProcessorTest {
 
         verify(fileClient).postFile(any());
         verify(receivedInstanceEventProducerService).publish(any(), any());
+    }
+
+    @Test
+    void shouldProcessInstanceWithSourceApplicationIdParameter() {
+        Long sourceApplicationId = 123L;
+
+        when(sourceApplicationIntegrationIdFunction.apply(any())).thenReturn(Optional.of("integrationId"));
+        when(sourceApplicationInstanceIdFunction.apply(any())).thenReturn(Optional.of("instanceId"));
+        when(instanceValidationService.validate(any())).thenReturn(Optional.empty());
+        when(instanceMapper.map(any(), any(), any())).thenReturn(Mono.just(instanceObject));
+
+        Mono<ResponseEntity<Object>> result = instanceProcessor.processInstance(sourceApplicationId, new Object());
+
+        StepVerifier.create(result)
+                .expectNext(ResponseEntity.accepted().build())
+                .verifyComplete();
+
+        ArgumentCaptor<Long> sourceApplicationIdCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(instanceMapper).map(sourceApplicationIdCaptor.capture(), any(), any());
+        assertEquals(sourceApplicationId, sourceApplicationIdCaptor.getValue());
+        verify(sourceApplicationAuthorizationService, never()).getSourceApplicationId(any());
     }
 
     @Test
