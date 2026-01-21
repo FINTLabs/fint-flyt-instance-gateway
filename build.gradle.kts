@@ -32,7 +32,7 @@ dependencyManagement {
     }
 }
 
-var fintResourceModelVersion = "3.21.10"
+var fintResourceModelVersion = "4.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -47,7 +47,7 @@ dependencies {
     implementation("no.novari:flyt-resource-server:6.0.0")
     implementation("no.novari:flyt-kafka:4.0.0")
 
-    implementation("no.fint:fint-arkiv-resource-model-java:$fintResourceModelVersion")
+    implementation("no.novari:fint-arkiv-resource-model-java:$fintResourceModelVersion")
 
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")

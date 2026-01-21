@@ -1,6 +1,6 @@
 package no.novari.flyt.instance.gateway;
 
-import no.fint.model.resource.arkiv.noark.SakResource;
+import no.novari.fint.model.resource.arkiv.noark.SakResource;
 import no.novari.flyt.instance.gateway.kafka.ArchiveCaseIdRequestService;
 import no.novari.flyt.instance.gateway.kafka.ArchiveCaseRequestService;
 import no.novari.flyt.resourceserver.security.client.sourceapplication.SourceApplicationAuthorizationService;
