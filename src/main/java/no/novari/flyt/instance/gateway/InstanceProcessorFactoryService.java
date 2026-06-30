@@ -1,6 +1,6 @@
 package no.novari.flyt.instance.gateway;
 
-import no.novari.flyt.instance.gateway.kafka.InstanceReceivalErrorEventProducerService;
+import no.novari.flyt.instance.gateway.kafka.InstanceErrorEventProducerService;
 import no.novari.flyt.instance.gateway.kafka.IntegrationRequestProducerService;
 import no.novari.flyt.instance.gateway.kafka.ReceivedInstanceEventProducerService;
 import no.novari.flyt.instance.gateway.validation.InstanceValidationService;
@@ -16,7 +16,7 @@ public class InstanceProcessorFactoryService {
     private final IntegrationRequestProducerService integrationRequestProducerService;
     private final InstanceValidationService instanceValidationService;
     private final ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
-    private final InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private final InstanceErrorEventProducerService instanceErrorEventProducerService;
     private final SourceApplicationAuthorizationService sourceApplicationAuthorizationService;
     private final FileClient fileClient;
 
@@ -24,14 +24,14 @@ public class InstanceProcessorFactoryService {
             IntegrationRequestProducerService integrationRequestProducerService,
             InstanceValidationService instanceValidationService,
             ReceivedInstanceEventProducerService receivedInstanceEventProducerService,
-            InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService,
+            InstanceErrorEventProducerService instanceErrorEventProducerService,
             SourceApplicationAuthorizationService sourceApplicationAuthorizationService,
             FileClient fileClient
     ) {
         this.integrationRequestProducerService = integrationRequestProducerService;
         this.instanceValidationService = instanceValidationService;
         this.receivedInstanceEventProducerService = receivedInstanceEventProducerService;
-        this.instanceReceivalErrorEventProducerService = instanceReceivalErrorEventProducerService;
+        this.instanceErrorEventProducerService = instanceErrorEventProducerService;
         this.sourceApplicationAuthorizationService = sourceApplicationAuthorizationService;
         this.fileClient = fileClient;
     }
@@ -57,7 +57,7 @@ public class InstanceProcessorFactoryService {
                 integrationRequestProducerService,
                 instanceValidationService,
                 receivedInstanceEventProducerService,
-                instanceReceivalErrorEventProducerService,
+                instanceErrorEventProducerService,
                 sourceApplicationAuthorizationService,
                 fileClient,
                 sourceApplicationIntegrationIdFunction,
