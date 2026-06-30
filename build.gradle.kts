@@ -3,12 +3,12 @@ import org.gradle.kotlin.dsl.named
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id("org.springframework.boot") version "3.5.10" apply false
+    id("org.springframework.boot") version "3.5.16" apply false
     id("io.spring.dependency-management") version "1.1.7"
     id("java")
     id("maven-publish")
     id("java-library")
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
 }
 
 group = "no.novari"
@@ -47,7 +47,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
 
     implementation("no.novari:flyt-resource-server:7.0.0")
-    implementation("no.novari:flyt-kafka:6.0.0")
+    implementation("no.novari:flyt-kafka:7.1.0")
 
     implementation("no.novari:fint-arkiv-resource-model-java:$fintResourceModelVersion")
 
@@ -90,7 +90,6 @@ publishing {
         }
     }
 }
-
 
 fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }

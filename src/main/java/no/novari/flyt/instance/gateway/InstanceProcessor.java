@@ -5,7 +5,7 @@ import no.novari.flyt.instance.gateway.exception.AbstractInstanceRejectedExcepti
 import no.novari.flyt.instance.gateway.exception.FileUploadException;
 import no.novari.flyt.instance.gateway.exception.IntegrationDeactivatedException;
 import no.novari.flyt.instance.gateway.exception.NoIntegrationException;
-import no.novari.flyt.instance.gateway.kafka.InstanceReceivalErrorEventProducerService;
+import no.novari.flyt.instance.gateway.kafka.InstanceErrorEventProducerService;
 import no.novari.flyt.instance.gateway.kafka.IntegrationRequestProducerService;
 import no.novari.flyt.instance.gateway.kafka.ReceivedInstanceEventProducerService;
 import no.novari.flyt.instance.gateway.model.Integration;
@@ -34,7 +34,7 @@ public class InstanceProcessor<T> {
     private final IntegrationRequestProducerService integrationRequestProducerService;
     private final InstanceValidationService instanceValidationService;
     private final ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
-    private final InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private final InstanceErrorEventProducerService instanceErrorEventProducerService;
     private final SourceApplicationAuthorizationService sourceApplicationAuthorizationService;
     private final FileClient fileClient;
     private final Function<T, Optional<String>> sourceApplicationIntegrationIdFunction;
@@ -48,7 +48,7 @@ public class InstanceProcessor<T> {
             IntegrationRequestProducerService integrationRequestProducerService,
             InstanceValidationService instanceValidationService,
             ReceivedInstanceEventProducerService receivedInstanceEventProducerService,
-            InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService,
+            InstanceErrorEventProducerService instanceErrorEventProducerService,
             SourceApplicationAuthorizationService sourceApplicationAuthorizationService,
             FileClient fileClient,
             Function<T, Optional<String>> sourceApplicationIntegrationIdFunction,
@@ -58,7 +58,7 @@ public class InstanceProcessor<T> {
         this.integrationRequestProducerService = integrationRequestProducerService;
         this.instanceValidationService = instanceValidationService;
         this.receivedInstanceEventProducerService = receivedInstanceEventProducerService;
-        this.instanceReceivalErrorEventProducerService = instanceReceivalErrorEventProducerService;
+        this.instanceErrorEventProducerService = instanceErrorEventProducerService;
         this.sourceApplicationAuthorizationService = sourceApplicationAuthorizationService;
         this.fileClient = fileClient;
         this.sourceApplicationIntegrationIdFunction = sourceApplicationIntegrationIdFunction;
@@ -93,7 +93,7 @@ public class InstanceProcessor<T> {
             Supplier<Long> sourceApplicationIdSupplier
     ) {
 
-        InstanceFlowHeaders.InstanceFlowHeadersBuilder instanceFlowHeadersBuilder = InstanceFlowHeaders.builder();
+        InstanceFlowHeaders.Builder instanceFlowHeadersBuilder = InstanceFlowHeaders.builder();
 
         Long sourceApplicationId;
 
@@ -148,7 +148,7 @@ public class InstanceProcessor<T> {
             }
 
         } catch (InstanceValidationException e) {
-            instanceReceivalErrorEventProducerService.publishInstanceValidationErrorEvent(instanceFlowHeadersBuilder.build(), e);
+            instanceErrorEventProducerService.publishInstanceValidationErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
             throw new ResponseStatusException(
                     HttpStatus.UNPROCESSABLE_ENTITY,
@@ -159,21 +159,21 @@ public class InstanceProcessor<T> {
                                     .toList()
             );
         } catch (NoIntegrationException e) {
-            instanceReceivalErrorEventProducerService.publishNoIntegrationFoundErrorEvent(instanceFlowHeadersBuilder.build(), e);
+            instanceErrorEventProducerService.publishNoIntegrationFoundErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
             throw new ResponseStatusException(
                     HttpStatus.UNPROCESSABLE_ENTITY,
                     e.getMessage()
             );
         } catch (IntegrationDeactivatedException e) {
-            instanceReceivalErrorEventProducerService.publishIntegrationDeactivatedErrorEvent(instanceFlowHeadersBuilder.build(), e);
+            instanceErrorEventProducerService.publishIntegrationDeactivatedErrorEvent(instanceFlowHeadersBuilder.build(), e);
 
             throw new ResponseStatusException(
                     HttpStatus.UNPROCESSABLE_ENTITY,
                     e.getMessage()
             );
         } catch (RuntimeException e) {
-            instanceReceivalErrorEventProducerService.publishGeneralSystemErrorEvent(instanceFlowHeadersBuilder.build());
+            instanceErrorEventProducerService.publishGeneralSystemErrorEvent(instanceFlowHeadersBuilder.build());
             throw e;
         }
 
@@ -191,12 +191,12 @@ public class InstanceProcessor<T> {
                 .thenReturn(ResponseEntity.accepted().build())
                 .onErrorResume(AbstractInstanceRejectedException.class, e -> {
                     log.error("Instance receival error");
-                    instanceReceivalErrorEventProducerService.publishInstanceRejectedErrorEvent(instanceFlowHeadersBuilder.build(), e);
+                    instanceErrorEventProducerService.publishInstanceRejectedErrorEvent(instanceFlowHeadersBuilder.build(), e);
                     return Mono.just(ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage()));
                 })
                 .onErrorResume(e -> e instanceof FileUploadException, e -> {
                     log.error("File upload error");
-                    instanceReceivalErrorEventProducerService.publishInstanceFileUploadErrorEvent(instanceFlowHeadersBuilder.build(), (FileUploadException) e);
+                    instanceErrorEventProducerService.publishInstanceFileUploadErrorEvent(instanceFlowHeadersBuilder.build(), (FileUploadException) e);
                     return Mono.just(
                             ResponseEntity
                                     .internalServerError()
@@ -205,7 +205,7 @@ public class InstanceProcessor<T> {
                 })
                 .onErrorResume(e -> {
                     log.error("General system error ", e);
-                    instanceReceivalErrorEventProducerService.publishGeneralSystemErrorEvent(instanceFlowHeadersBuilder.build());
+                    instanceErrorEventProducerService.publishGeneralSystemErrorEvent(instanceFlowHeadersBuilder.build());
                     return Mono.just(ResponseEntity.internalServerError().build());
                 });
 

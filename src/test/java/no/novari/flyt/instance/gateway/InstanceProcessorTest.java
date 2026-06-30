@@ -1,7 +1,7 @@
 package no.novari.flyt.instance.gateway;
 
 import no.novari.flyt.instance.gateway.exception.FileUploadException;
-import no.novari.flyt.instance.gateway.kafka.InstanceReceivalErrorEventProducerService;
+import no.novari.flyt.instance.gateway.kafka.InstanceErrorEventProducerService;
 import no.novari.flyt.instance.gateway.kafka.IntegrationRequestProducerService;
 import no.novari.flyt.instance.gateway.kafka.ReceivedInstanceEventProducerService;
 import no.novari.flyt.instance.gateway.model.File;
@@ -45,7 +45,7 @@ public class InstanceProcessorTest {
     private ReceivedInstanceEventProducerService receivedInstanceEventProducerService;
 
     @Mock
-    private InstanceReceivalErrorEventProducerService instanceReceivalErrorEventProducerService;
+    private InstanceErrorEventProducerService instanceErrorEventProducerService;
 
     @Mock
     private SourceApplicationAuthorizationService sourceApplicationAuthorizationService;
@@ -76,7 +76,7 @@ public class InstanceProcessorTest {
                 integrationRequestProducerService,
                 instanceValidationService,
                 receivedInstanceEventProducerService,
-                instanceReceivalErrorEventProducerService,
+                instanceErrorEventProducerService,
                 sourceApplicationAuthorizationService,
                 fileClient,
                 sourceApplicationIntegrationIdFunction,
